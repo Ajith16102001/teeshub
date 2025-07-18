@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Coupons</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Issued Coupons</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Coupon Code</th>
+        <th>Discount %</th>
+        <th>Valid Until</th>
+        <th>Used</th>
+      </tr>
+    </thead>
+    <tbody id="coupon-table">
+      <tr><td colspan="5">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const token = sessionStorage.getItem('adminToken');
+    if (!token) {
+      alert("Unauthorized. Please login as admin.");
+      window.location.href = "/admin-login.html";
+    }
+
+    async function loadCoupons() {
+      try {
+        const res = await fetch('/api/admin/coupons', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const coupons = await res.json();
+        const table = document.getElementById("coupon-table");
+        table.innerHTML = "";
+
+        if (coupons.length === 0) {
+          table.innerHTML = "<tr><td colspan='5'>No coupons issued yet.</td></tr>";
+          return;
+        }
+
+        coupons.forEach(c => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${c.email}</td>
+            <td>${c.code}</td>
+            <td>${c.discount_percent}%</td>
+            <td>${c.valid_until}</td>
+            <td>${c.used ? '✅' : '❌'}</td>
+          `;
+          table.appendChild(row);
+        });
+
+      } catch (err) {
+        console.error("Failed to load coupons:", err);
+        document.getElementById("coupon-table").innerHTML = "<tr><td colspan='5'>Failed to load.</td></tr>";
+      }
+    }
+
+    loadCoupons();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qualitee - Sustainable T-Shirts</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Chatbot Styles */
+    #chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    #chatbot-toggle {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    #chatbot-toggle:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    #chatbot-window {
+      display: none;
+      width: 350px;
+      height: 500px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+    
+    #chatbot-header {
+      background-color: #28a745;
+      color: white;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    #chatbot-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    #chatbot-title i {
+      font-size: 22px;
+    }
+    
+    #chatbot-title h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    
+    #chatbot-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    #chatbot-messages {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-color: #fafafa;
+    }
+    
+    .chatbot-message {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+      font-size: 14.5px;
+    }
+    
+    .user-message {
+      align-self: flex-end;
+      background-color: #28a745;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .bot-message {
+      align-self: flex-start;
+      background-color: white;
+      color: #333;
+      border-bottom-left-radius: 4px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .bot-notice {
+      align-self: flex-start;
+      background-color: #fff8e1;
+      color: #5d4037;
+      border-bottom-left-radius: 4px;
+      border: 1px solid #ffd54f;
+    }
+    
+    #chatbot-input-area {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid #e0e0e0;
+      background-color: white;
+    }
+    
+    #chatbot-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 24px;
+      outline: none;
+      font-size: 14.5px;
+    }
+    
+    #chatbot-input:focus {
+      border-color: #28a745;
+    }
+    
+    #chatbot-send {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      margin-left: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #chatbot-send i {
+      font-size: 18px;
+    }
+    
+    /* Loading indicator */
+    .chatbot-loading {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+    
+    .chatbot-loading span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #888;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+    
+    .chatbot-loading span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    
+    .chatbot-loading span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-8px); }
+    }
+    
+    /* Quick reply buttons */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    
+    .quick-reply {
+      background-color: #f0f0f0;
+      border: none;
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .quick-reply:hover {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Chatbot HTML -->
+  <div id="chatbot-container">
+    <div id="chatbot-toggle">
+      <i class="fas fa-comment-dots"></i>
+      <span>Need help?</span>
+    </div>
+    <div id="chatbot-window">
+      <div id="chatbot-header">
+        <div id="chatbot-title">
+          <i class="fas fa-tshirt"></i>
+          <h3>Qualitee Assistant</h3>
+        </div>
+        <button id="chatbot-close"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="chatbot-messages"></div>
+      <div id="chatbot-input-area">
+        <input type="text" id="chatbot-input" placeholder="Ask about our products..." autocomplete="off">
+        <button id="chatbot-send"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Chatbot functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM elements
+      const chatbotToggle = document.getElementById('chatbot-toggle');
+      const chatbotWindow = document.getElementById('chatbot-window');
+      const chatbotClose = document.getElementById('chatbot-close');
+      const chatbotMessages = document.getElementById('chatbot-messages');
+      const chatbotInput = document.getElementById('chatbot-input');
+      const chatbotSend = document.getElementById('chatbot-send');
+      
+      // Toggle chatbot visibility
+      chatbotToggle.addEventListener('click', function() {
+        chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+      });
+      
+      chatbotClose.addEventListener('click', function() {
+        chatbotWindow.style.display = 'none';
+      });
+      
+      // Send message function
+      function sendMessage() {
+        const message = chatbotInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        chatbotInput.value = '';
+        
+        // Show typing indicator
+        const typingId = showTypingIndicator();
+        
+        // Process message and get bot response
+        setTimeout(function() {
+          // Remove typing indicator
+          const typingElement = document.getElementById(typingId);
+          if (typingElement) typingElement.remove();
+          
+          // Get bot response
+          const response = getBotResponse(message);
+          
+          // Add bot response
+          if (response.type === 'answer') {
+            addMessage(response.text, 'bot');
+          } else {
+            addMessage(response.text, 'bot-notice');
+          }
+          
+          // Add quick replies if available
+          if (response.quickReplies) {
+            addQuickReplies(response.quickReplies);
+          }
+        }, 800 + Math.random() * 700); // Random delay for natural feel
+      }
+      
+      // Add message to chat
+      function addMessage(text, type) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chatbot-message', type + '-message');
+        messageElement.textContent = text;
+        chatbotMessages.appendChild(messageElement);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      }
+      
+      // Show typing indicator
+      function showTypingIndicator() {
+        const id = 'typing-' + Date.now();
+        const typingElement = document.createElement('div');
+        typingElement.classList.add('chatbot-message', 'bot-message');
+        typingElement.id = id;
+        
+        const typingContent = document.createElement('div');
+        typingContent.classList.add('chatbot-loading');
+        typingContent.innerHTML = `
+          <span>Assistant is typing</span>
+          <div>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        `;
+        typingElement.appendChild(typingContent);
+        
+        chatbotMessages.appendChild(typingElement);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        return id;
+      }
+      
+      // Add quick reply buttons
+      function addQuickReplies(replies) {
+        const quickReplyContainer = document.createElement('div');
+        quickReplyContainer.classList.add('quick-replies');
+        
+        replies.forEach(reply => {
+          const button = document.createElement('button');
+          button.classList.add('quick-reply');
+          button.textContent = reply;
+          button.addEventListener('click', function() {
+            chatbotInput.value = reply;
+            sendMessage();
+          });
+          quickReplyContainer.appendChild(button);
+        });
+        
+        chatbotMessages.appendChild(quickReplyContainer);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      }
+      
+      // Event listeners
+      chatbotSend.addEventListener('click', sendMessage);
+      chatbotInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+      });
+      
+      // Initial greeting with quick replies
+      setTimeout(function() {
+        addMessage("Hello! 👋 I'm your Qualitee assistant. I can help with:", 'bot');
+        addQuickReplies([
+          "Product questions",
+          "Order status",
+          "Shipping info",
+          "Returns policy"
+        ]);
+      }, 1000);
+    });
+
+    // Enhanced bot response logic that only answers website-related questions
+    function getBotResponse(userMessage) {
+      const lowerMessage = userMessage.toLowerCase();
+      
+      // Define website-related keywords
+      const websiteKeywords = [
+        // Products
+        'product', 'tshirt', 'shirt', 'hoodie', 'collection', 'item', 'stock', 'inventory',
+        // Purchasing
+        'buy', 'purchase', 'order', 'checkout', 'cart', 'payment', 'price', 'cost', 'discount',
+        // Account
+        'account', 'login', 'sign in', 'register', 'profile',
+        // Shipping
+        'ship', 'delivery', 'dispatch', 'arrive', 'when', 'track', 'tracking', 'carrier',
+        // Returns
+        'return', 'exchange', 'refund', 'policy', 'cancel', 'replace', 'wrong', 'defective',
+        // Website
+        'website', 'page', 'link', 'navigation', 'menu', 'search', 'filter', 'category'
+      ];
+      
+      // Check if message contains any website-related keywords
+      const isWebsiteRelated = websiteKeywords.some(keyword => lowerMessage.includes(keyword));
+      
+      if (!isWebsiteRelated) {
+        return {
+          type: 'notice',
+          text: "I'm sorry, I can only answer questions related to our website, products, and services. Please ask about our sustainable t-shirts, orders, or website features.",
+          quickReplies: [
+            "What products do you offer?",
+            "How do I track my order?",
+            "What's your return policy?"
+          ]
+        };
+      }
+      
+      // Define responses for website-related questions
+      const responses = {
+        products: {
+          type: 'answer',
+          text: "We offer sustainable t-shirts made from 100% organic cotton:\n\n• Classic Crew Necks (₹799)\n• V-Neck Tees (₹849)\n• Graphic Tees (₹899)\n• Long Sleeves (₹999)\n• Hoodies (₹1499)\n\nAll designed to be eco-friendly and durable.",
+          quickReplies: ["What sizes are available?", "How do I order?", "Tell me about your materials"]
+        },
+        ordering: {
+          type: 'answer',
+          text: "Ordering is easy:\n\n1. Select your items\n2. Proceed to checkout\n3. Enter shipping details\n4. Make payment\n\nYou'll receive an order confirmation email with tracking information.",
+          quickReplies: ["How long does shipping take?", "What payment methods do you accept?", "Can I modify my order?"]
+        },
+        shipping: {
+          type: 'answer',
+          text: "Our shipping info:\n\n• Free delivery on orders over ₹999\n• Typically ships within 1 business day\n• Delivery in 3-5 business days\n• Track your order from your account\n\nNeed help with a specific order?",
+          quickReplies: ["How do I track my order?", "Do you ship internationally?", "What if my package is late?"]
+        },
+        returns: {
+          type: 'answer',
+          text: "Our hassle-free return policy:\n\n• 30-day return window\n• Items must be unworn with tags\n• Free return shipping\n• Refund processed within 5 business days\n\nContact support@qualitee.com for assistance.",
+          quickReplies: ["How do I start a return?", "What about exchanges?", "My item arrived damaged"]
+        },
+        default: {
+          type: 'answer',
+          text: "I'd be happy to help with that! Could you provide a few more details about what you need regarding our website or products?",
+          quickReplies: ["Where's my order?", "What's your most popular item?", "How do I contact support?"]
+        }
+      };
+      
+      // Determine which response to use
+      if (/product|tshirt|shirt|hoodie|collection|item/.test(lowerMessage)) return responses.products;
+      if (/order|buy|purchase|checkout|cart|payment/.test(lowerMessage)) return responses.ordering;
+      if (/ship|delivery|dispatch|arrive|track/.test(lowerMessage)) return responses.shipping;
+      if (/return|exchange|refund|policy|cancel/.test(lowerMessage)) return responses.returns;
+      
+      return responses.default;
+    }
+  </script>
+</body>
+</html>

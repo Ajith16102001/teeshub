@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Checkout</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 40px;">
+  <h2>Secure Checkout</h2>
+
+  <p><b>Items in Cart:</b> <span id="itemCount">0</span></p>
+<p><b>Total Amount:</b> ₹<span id="totalDisplay">0</span></p>
+<button id="payBtn">Pay with Razorpay</button>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const payBtn = document.getElementById("payBtn");
+    const totalDisplay = document.getElementById("totalDisplay");
+    const itemCountDisplay = document.getElementById("itemCount");
+
+    const cart = JSON.parse(sessionStorage.getItem("cart") || "[]");
+    const token = sessionStorage.getItem("token") || "";
+
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
+
+    // Show total & items on page
+    totalDisplay.textContent = total;
+    itemCountDisplay.textContent = itemCount;
+
+    // ✅ Backup cart in case sessionStorage is cleared after payment
+    localStorage.setItem("latestCart", JSON.stringify(cart));
+
+    if (total <= 0) {
+      alert("⚠️ Your cart is empty.");
+      payBtn.disabled = true;
+      return;
+    }
+
+    payBtn.addEventListener("click", async () => {
+      if (!token) {
+        alert("🔐 Please log in to continue.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:3000/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: total * 100 }) // Razorpay uses paise
+        });
+
+        const data = await res.json();
+        if (!data.success || !data.order_id || !data.key) {
+          throw new Error("Razorpay order creation failed");
+        }
+
+        const options = {
+          key: data.key,
+          amount: data.amount,
+          currency: "INR",
+          name: "Mens Tees Hub",
+          description: "Order Payment",
+          order_id: data.order_id,
+          handler: async function (response) {
+            try {
+              const freshCart = JSON.parse(localStorage.getItem("latestCart") || "[]");
+              const freshTotal = freshCart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+              const saveRes = await fetch("http://localhost:3000/api/checkout", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + token
+                },
+                body: JSON.stringify({
+                  cart: freshCart,
+                  total: freshTotal,
+                  address: "Default Address",
+                  paymentMethod: "razorpay"
+                })
+              });
+
+              const contentType = saveRes.headers.get("content-type");
+              if (!saveRes.ok || !contentType?.includes("application/json")) {
+                const text = await saveRes.text();
+                throw new Error("Server response: " + text);
+              }
+
+              const result = await saveRes.json();
+              if (result.success) {
+                sessionStorage.setItem("orderId", result.orderId);
+                sessionStorage.removeItem("cart");
+                localStorage.removeItem("latestCart");
+                window.location.href = "success.html";
+              } else {
+                alert("❌ Order failed: " + result.error);
+              }
+            } catch (err) {
+              alert("❌ Payment completed but saving order failed.\n" + err.message);
+              console.error("Handler error:", err);
+            }
+          },
+          prefill: {
+            name: "Ajith Kumar",
+            email: "ajith@example.com",
+            contact: "9999999999"
+          },
+          theme: {
+            color: "#0a58ca"
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+      } catch (err) {
+        console.error("Payment error:", err);
+        alert("❌ Payment could not be completed.\n" + err.message);
+      }
+    });
+  });
+</script>
+
+
+
+
+
+</body>
+</html>

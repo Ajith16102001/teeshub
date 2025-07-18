@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Set Daily Quote Topic</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4; }
+    .container {
+      max-width: 400px; margin: auto; padding: 30px; background: white;
+      border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    input {
+      width: 100%; padding: 12px; margin-top: 20px;
+      font-size: 16px; border-radius: 6px; border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px; padding: 12px 20px; font-size: 16px;
+      background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer;
+      width: 100%;
+    }
+    #message { text-align: center; margin-top: 20px; color: green; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Set Daily Quote Topic</h2>
+  <input type="text" id="topic" placeholder="Enter new topic">
+  <button onclick="setTopic()">Update Topic</button>
+  <p id="message"></p>
+</div>
+
+<script>
+  const token = sessionStorage.getItem('adminToken');
+  if (!token) {
+    alert("Unauthorized. Please login as admin.");
+    window.location.href = "/admin-login.html";
+  }
+
+  async function setTopic() {
+    const topic = document.getElementById("topic").value.trim();
+    const message = document.getElementById("message");
+
+    if (!topic) {
+      message.textContent = "Please enter a topic.";
+      message.style.color = "red";
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/set-topic', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ topic })
+      });
+
+      const data = await res.json();
+      message.textContent = data.message || "Topic updated!";
+      message.style.color = res.ok ? "green" : "red";
+
+    } catch (err) {
+      console.error("Failed to update topic:", err);
+      message.textContent = "Failed to update topic.";
+      message.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Success</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #28a745;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .info {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .product {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .product img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 20px;
+    }
+
+    .product-details {
+      flex-grow: 1;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .back-home {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 20px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎉 Your Order was Successful, Thank you <span id="customer-name">Buddy</span>!</h2>
+    <div class="info">
+      <p>🧾 Order ID: <strong id="order-id">N/A</strong></p>
+      <p id="total-price">Total: Rs.0.00</p>
+    </div>
+
+    <div id="order-summary" style="margin-top: 20px;"></div>
+
+    <button class="back-home" onclick="goHome()">Continue Shopping</button>
+  </div>
+
+  <script>
+    // ✅ Redirect to home if no order data
+    if (!sessionStorage.getItem("orderId") || !sessionStorage.getItem("cartItems")) {
+      alert("No order found. Please checkout first.");
+      window.location.href = "index.html";
+    }
+
+    // ✅ Set default name
+    document.getElementById("customer-name").textContent = "Buddy";
+
+    const orderId = sessionStorage.getItem("orderId") || "N/A";
+    const cartItems = JSON.parse(sessionStorage.getItem("cartItems") || "[]");
+
+    // ✅ Recalculate total price to avoid NaN
+    const total = cartItems.reduce((sum, item) => {
+      const quantity = parseInt(item.quantity) || 0;
+      const price = parseFloat(item.price) || 0;
+      return sum + (price * quantity);
+    }, 0);
+
+    document.getElementById("order-id").textContent = orderId;
+    document.getElementById("total-price").textContent = `Total: Rs.${total.toFixed(2)}`;
+
+    const orderSummary = document.getElementById("order-summary");
+
+    if (cartItems.length === 0) {
+      orderSummary.innerHTML = "<p>No items found in your order.</p>";
+    } else {
+      orderSummary.innerHTML = cartItems.map(item => `
+        <div class="product">
+          <img src="${item.image}" alt="${item.title}">
+          <div class="product-details">
+            <p><strong>${item.title}</strong></p>
+            <p>Size: ${item.size || item.selectedSize || 'N/A'}</p>
+            <p>Quantity: ${item.quantity}</p>
+            <p>Price: Rs.${(item.price * item.quantity).toFixed(2)}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // ✅ Clear on button click only
+    function goHome() {
+      sessionStorage.removeItem("cartItems");
+      sessionStorage.removeItem("totalPrice");
+      sessionStorage.removeItem("orderId");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

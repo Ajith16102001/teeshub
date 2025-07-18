@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ 
+  <title>Login</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('./images/form3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .glass-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .form-wrapper {
+      padding: 40px;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h1 {
+      font-size: 28px;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .auth-header p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 15px;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: white;
+      font-size: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: var(--border-radius);
+      font-size: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .auth-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .auth-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .success-message {
+      color: var(--success);
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .auth-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      .form-wrapper {
+        padding: 30px 20px;
+      }
+
+      .auth-header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="auth-container" class="glass-container auth-container">
+  <div class="form-wrapper" id="login-wrapper">
+    <div class="success-message" id="success-message"></div>
+    <div class="auth-header">
+      <h1>Welcome Back</h1>
+      <p>Login to access your account</p>
+    </div>
+    <form id="login-form" class="auth-form">
+      <div class="form-group">
+        <label for="login-email" class="form-label">Email Address</label>
+        <input type="email" id="login-email" class="form-input" required>
+        <div class="error-message" id="login-email-error"></div>
+      </div>
+      <div class="form-group">
+        <label for="login-password" class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-input" required>
+        <div class="error-message" id="login-password-error"></div>
+      </div>
+      <button type="submit" class="auth-btn">Login</button>
+    </form>
+    <div class="auth-footer">
+      <p>Don't have an account? <a href="#" id="show-signup" class="auth-link">Sign up</a></p>
+    </div>
+  </div>
+
+  <div class="form-wrapper" id="signup-wrapper" style="display: none;">
+    <div class="auth-header">
+      <h1>Create Account</h1>
+      <p>Join us today for exclusive features</p>
+    </div>
+    <form id="signup-form" class="auth-form">
+      <div class="form-group">
+        <label for="signup-name" class="form-label">Full Name</label>
+        <input type="text" id="signup-name" class="form-input" required>
+        <div class="error-message" id="signup-name-error"></div>
+      </div>
+      <div class="form-group">
+        <label for="signup-email" class="form-label">Email Address</label>
+        <input type="email" id="signup-email" class="form-input" required>
+        <div class="error-message" id="signup-email-error"></div>
+      </div>
+      <div class="form-group">
+        <label for="signup-password" class="form-label">Password</label>
+        <input type="password" id="signup-password" class="form-input" required>
+        <div class="error-message" id="signup-password-error"></div>
+      </div>
+      <button type="submit" class="auth-btn">Create Account</button>
+    </form>
+    <div class="auth-footer">
+      <p>Already have an account? <a href="#" id="show-login" class="auth-link">Login</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  const showSignup = document.getElementById('show-signup');
+  const showLogin = document.getElementById('show-login');
+  const loginWrapper = document.getElementById('login-wrapper');
+  const signupWrapper = document.getElementById('signup-wrapper');
+  const successMessage = document.getElementById('success-message');
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+
+  // Switch to signup form
+  showSignup.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginWrapper.style.display = 'none';
+    signupWrapper.style.display = 'block';
+  });
+
+  // Switch to login form
+  showLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    signupWrapper.style.display = 'none';
+    loginWrapper.style.display = 'block';
+  });
+
+  // Signup handler
+  signupForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+
+    try {
+      const res = await fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (data.token) {
+        successMessage.textContent = 'Signup successful! Please login.';
+        successMessage.style.display = 'block';
+        signupForm.reset();
+        signupWrapper.style.display = 'none';
+        loginWrapper.style.display = 'block';
+        setTimeout(() => (successMessage.style.display = 'none'), 3000);
+      } else {
+        alert(data.error || 'Signup failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Signup error');
+    }
+  });
+
+  // ✅ Login handler - FIXED to store in sessionStorage
+  loginForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+      const res = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (data.token) {
+        // ✅ Store token and user info in sessionStorage
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+
+        alert('Login successful! Redirecting to details...');
+        window.location.href = 'shipping.html';
+      } else {
+        alert(data.error || 'Login failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Login error');
+    }
+  });
+</script>
+
+
+
+</body>
+</html>

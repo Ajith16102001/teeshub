@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .order {
+      background: #fff;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #ccc;
+    }
+    .logout-btn {
+      float: right;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .status-btn {
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    select {
+      padding: 5px;
+      border-radius: 4px;
+    }
+    .widget {
+      background: #007bff;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      min-width: 150px;
+      font-weight: bold;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      flex: 1;
+      text-align: center;
+    }
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+    button {
+      margin: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    hr {
+      margin: 15px 0;
+    }
+	.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .top-bar button {
+    padding: 8px 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .top-bar button:hover {
+    background-color: #555;
+  }
+  
+  .admin-quote-btn {
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 40px auto;
+  display: block;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.admin-quote-btn:hover {
+  background-color: #0056b3;
+}
+
+.admin-btn {
+  display: inline-block;
+  float: right;
+  margin-bottom: 20px;
+  padding: 10px 16px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.admin-btn:hover {
+  background-color: #218838;
+}
+
+  
+  </style>
+</head>
+<body>
+<div class="top-bar">
+
+<a href="/admin-set-topic.html" class="admin-btn">📝 Admin Set Topic</a>
+
+
+  <button class="admin-quote-btn" onclick="window.location.href='/admin-quotes.html'">
+    📋 Admin Quote
+  </button>
+  
+  <button onclick="window.location.href='/admin-products.html'">Admin Products</button>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+
+<h2>Admin Dashboard - All Orders</h2>
+
+<div id="summary-widgets" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+  <div class="widget" id="totalOrders">Total Orders: 0</div>
+  <div class="widget" id="totalRevenue">Total Revenue: Rs. 0.00</div>
+  <div class="widget" id="deliveredOrders">Delivered: 0</div>
+  <div class="widget" id="processingOrders">Processing: 0</div>
+</div>
+
+<div style="margin-bottom: 20px;">
+  <input type="text" id="searchInput" placeholder="Search by customer name/email"
+    style="padding: 6px; width: 250px; border-radius: 4px; border: 1px solid #ccc;" oninput="filterOrders()" />
+  <select id="statusFilter" onchange="filterOrders()" style="padding: 6px; border-radius: 4px; margin-left: 10px;">
+    <option value="">All Status</option>
+    <option value="processing">Processing</option>
+    <option value="shipped">Shipped</option>
+    <option value="delivered">Delivered</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+</div>
+
+<div id="orders"></div>
+
+<script>
+const token = sessionStorage.getItem('adminToken');
+if (!token) {
+  alert("Unauthorized. Please login as admin.");
+  window.location.href = "/admin-login.html";
+}
+
+let allOrders = [];
+
+async function fetchOrders() {
+  const container = document.getElementById("orders");
+  container.innerHTML = "<p>Loading orders...</p>";
+  try {
+    const res = await fetch('/api/admin/orders', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (!data.success || !Array.isArray(data.orders)) {
+      console.warn("Invalid response structure:", data);
+      return container.innerHTML = "<p>Failed to fetch orders.</p>";
+    }
+
+    allOrders = data.orders;
+    if (allOrders.length === 0) {
+      container.innerHTML = "<p>No orders found.</p>";
+    } else {
+      displayOrders(allOrders);
+      updateStats(allOrders);
+    }
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    container.innerHTML = "<p>Error loading orders.</p>";
+  }
+}
+
+function displayOrders(orderList) {
+  const container = document.getElementById("orders");
+  container.innerHTML = "";
+  if (!Array.isArray(orderList) || orderList.length === 0) {
+    return container.innerHTML = "<p>No orders found.</p>";
+  }
+
+  orderList.forEach(order => {
+    const div = document.createElement("div");
+    div.className = "order";
+    div.id = `order-${order.order_id}`;
+
+    const itemsHTML = Array.isArray(order.items)
+      ? order.items.map(i => `<li>${i.product || 'N/A'} x ${i.quantity || 1} (${i.size || '-'})</li>`).join('')
+      : "<li>No items</li>";
+
+    div.innerHTML = `
+      <h3>Order #${order.order_number}</h3>
+      <p><strong>Customer:</strong> ${order.customer_name} (${order.customer_email})</p>
+      <p><strong>Total:</strong> Rs.${order.total_amount}</p>
+      <p><strong>Status:</strong> 
+        <span id="status-${order.order_id}">${order.status}</span>
+        <span id="update-badge-${order.order_id}" style="color: green; display: none; font-weight: bold;">✔ Updated</span>
+      </p>
+      <select id="status-select-${order.order_id}">
+        <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+      </select>
+      <button class="status-btn" onclick="updateStatus(${order.order_id})">Update Status</button>
+      <p><strong>Address:</strong> ${order.shipping_address || 'N/A'}</p>
+      <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+      <p><strong>Items:</strong></p>
+      <ul>${itemsHTML}</ul>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function updateStats(orders) {
+  const total = orders.length;
+  const delivered = orders.filter(o => o.status === 'delivered').length;
+  const processing = orders.filter(o => o.status === 'processing' || o.status === 'pending').length;
+  const revenue = orders
+    .filter(o => o.status === 'delivered' || o.status === 'shipped')
+    .reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+
+  document.getElementById("totalOrders").innerText = `Total Orders: ${total}`;
+  document.getElementById("totalRevenue").innerText = `Total Revenue: Rs.${revenue.toFixed(2)}`;
+  document.getElementById("deliveredOrders").innerText = `Delivered: ${delivered}`;
+  document.getElementById("processingOrders").innerText = `Processing: ${processing}`;
+}
+
+function filterOrders() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const status = document.getElementById("statusFilter").value;
+  const filtered = allOrders.filter(order => {
+    const matchText = order.customer_name.toLowerCase().includes(search) || order.customer_email.toLowerCase().includes(search);
+    const matchStatus = !status || order.status === status;
+    return matchText && matchStatus;
+  });
+  displayOrders(filtered);
+  updateStats(filtered);
+}
+
+async function updateStatus(orderId) {
+  const select = document.getElementById(`status-select-${orderId}`);
+  const newStatus = select.value;
+
+  try {
+    const res = await fetch('/api/admin/update-status', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ orderId, newStatus })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 401 || res.status === 403) {
+      alert("Unauthorized. Please login again.");
+      sessionStorage.removeItem("adminToken");
+      return window.location.href = "/admin-login.html";
+    }
+
+    if (data.success) {
+      document.getElementById(`status-${orderId}`).innerText = newStatus;
+      const badge = document.getElementById(`update-badge-${orderId}`);
+      badge.style.display = "inline";
+      setTimeout(() => { badge.style.display = "none"; }, 2000);
+      const idx = allOrders.findIndex(o => o.order_id === orderId);
+      if (idx !== -1) allOrders[idx].status = newStatus;
+      filterOrders();
+      alert("✅ Order status updated");
+    } else {
+      alert(data.error || "❌ Update failed");
+    }
+  } catch (err) {
+    console.error("Update error:", err);
+    alert("❌ Something went wrong");
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('adminToken');
+  window.location.href = "/admin-login.html";
+}
+
+// Initial call
+fetchOrders();
+</script>
+
+</body>
+</html>

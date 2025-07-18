@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Daily Quotes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    button {
+      padding: 6px 12px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Submitted Quotes</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name / Email</th>
+        <th>Topic</th>
+        <th>Quote</th>
+        <th>Date</th>
+        <th>Winner</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="quote-table">
+      <tr><td colspan="7">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const token = sessionStorage.getItem('adminToken');
+    if (!token) {
+      alert("Unauthorized. Please login as admin.");
+      window.location.href = "/admin-login.html";
+    }
+
+    async function loadQuotes() {
+      try {
+        const res = await fetch('/api/admin/quotes', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const quotes = await res.json();
+        const table = document.getElementById("quote-table");
+        table.innerHTML = "";
+
+        if (quotes.length === 0) {
+          table.innerHTML = "<tr><td colspan='7'>No quotes found.</td></tr>";
+          return;
+        }
+
+        quotes.forEach(q => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${q.id}</td>
+            <td>${q.name}<br><small>${q.email}</small></td>
+            <td>${q.topic}</td>
+            <td>${q.quote_text}</td>
+            <td>${q.date}</td>
+            <td>${q.is_winner ? '✅' : '❌'}</td>
+            <td>
+              <button onclick="selectWinner(${q.id}, '${q.email}')" ${q.is_winner ? 'disabled' : ''}>Select Winner</button>
+            </td>
+          `;
+          table.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Failed to load quotes:", err);
+        document.getElementById("quote-table").innerHTML = "<tr><td colspan='7'>Failed to load data.</td></tr>";
+      }
+    }
+
+    async function selectWinner(quoteId, email) {
+      const confirmAction = confirm(`Send coupon to ${email}?`);
+      if (!confirmAction) return;
+
+      try {
+        const res = await fetch('/api/admin/select-winner', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ quoteId })
+        });
+
+        const data = await res.json();
+        alert(data.message || "Winner selected.");
+        loadQuotes(); // Refresh
+      } catch (err) {
+        console.error("Winner selection failed:", err);
+        alert("Something went wrong.");
+      }
+    }
+
+    loadQuotes();
+  </script>
+
+</body>
+</html>
