@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .shipping-box {
+      background: #fff;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      width: 400px;
+    }
+    .shipping-box h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .shipping-box input,
+    .shipping-box textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .shipping-box button {
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: -8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="shipping-box">
+  <h2>Enter Delivery Details</h2>
+  <input type="text" id="fullName" placeholder="Full Name" required />
+  <textarea id="address" placeholder="Delivery Address" rows="4" required></textarea>
+  <input type="tel" id="phone" placeholder="Phone Number" required />
+  <div id="error" class="error"></div>
+  <button onclick="saveAndContinue()">Continue to Payment</button>
+</div>
+
+<script>
+  function saveAndContinue() {
+    const name = document.getElementById("fullName").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const error = document.getElementById("error");
+
+    if (!address || !phone) {
+      error.textContent = "Address and phone number are required!";
+      return;
+    }
+
+    if (!/^\d{10}$/.test(phone)) {
+      error.textContent = "Phone number must be 10 digits.";
+      return;
+    }
+
+    sessionStorage.setItem("shippingName", name || "Customer");
+    sessionStorage.setItem("shippingAddress", address);
+    sessionStorage.setItem("shippingPhone", phone);
+
+    // ✅ Redirect to payment page
+    window.location.href = "payment.html";
+  }
+</script>
+
+</body>
+</html>

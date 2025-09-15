@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Products</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    h2 { text-align: center; }
+    .top-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
+    .product-table, .product-table th, .product-table td {
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      padding: 10px;
+    }
+    .product-table { width: 100%; background: #fff; }
+    input, select { padding: 5px; margin: 5px; }
+    button { padding: 5px 10px; margin: 5px; }
+    .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    .form-row input, .form-row select { flex: 1; }
+    .highlight { background-color: #e6ffe6; }
+  </style>
+</head>
+<body>
+
+<h2>Admin – Product Management</h2>
+
+<div class="top-bar">
+  <button onclick="logout()">Logout</button>
+  <button onclick="window.location.href='/admin-dashboard.html'">Admin Dashboard</button>
+</div>
+
+<h3>Add / Edit Product</h3>
+<div id="productForm">
+  <div class="form-row">
+    <input type="text" id="name" placeholder="Product Name">
+    <input type="number" id="price" placeholder="Price">
+
+    <!-- ✅ Category dropdown for better UX -->
+    <select id="category_id">
+      <option value="">Select Category</option>
+      <option value="1">V-Neck Tees</option>
+      <option value="2">Long Sleeve Tees</option>
+      <option value="3">Graphics Design Tees</option>
+      <option value="4">Hoodies</option>
+    </select>
+
+    <input type="text" id="image_url" placeholder="Image URL">
+  </div>
+
+  <button onclick="addOrUpdateProduct()">Save Product</button>
+  <button onclick="resetForm()">Clear</button>
+</div>
+
+<h3>All Products</h3>
+<table class="product-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Category</th> <!-- ✅ Changed to Category instead of Category ID -->
+      <th>Image</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="productList"></tbody>
+</table>
+
+
+<h3>All Products</h3>
+<table class="product-table">
+  <thead>
+    <tr>
+      <th>ID</th><th>Name</th><th>Price</th><th>Category ID</th><th>Image</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="productList"></tbody>
+</table>
+
+<script>
+  const token = sessionStorage.getItem('adminToken');
+  if (!token) {
+    alert("Unauthorized. Please login as admin.");
+    window.location.href = "/admin-login.html";
+  }
+
+  let currentEditId = null;
+
+  async function fetchProducts() {
+    try {
+      const res = await fetch('/api/admin/products', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        renderProducts(data.products);
+      } else {
+        alert("Failed to fetch products");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error fetching products");
+    }
+  }
+
+  function renderProducts(products) {
+    const categoryMap = {
+      1: "V-Neck",
+      2: "Long Sleeve",
+      3: "Graphics Design",
+      4: "Hoodies"
+    };
+
+    const list = document.getElementById("productList");
+    list.innerHTML = "";
+    products.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>Rs.${p.price}</td>
+        <td>${categoryMap[p.category_id] || "Unknown"}</td>
+        <td><img src="${p.image_url}" alt="" width="50"></td>
+        <td>
+          <button onclick="editProduct(${p.id}, \`${p.name}\`, ${p.price}, ${p.category_id}, \`${p.image_url}\`)">Edit</button>
+          <button onclick="deleteProduct(${p.id})">Delete</button>
+        </td>
+      `;
+      list.appendChild(tr);
+    });
+  }
+
+  async function addOrUpdateProduct() {
+    const name = document.getElementById("name").value.trim();
+    const price = parseFloat(document.getElementById("price").value.trim());
+    const category_id = parseInt(document.getElementById("category_id").value.trim());
+    const image_url = document.getElementById("image_url").value.trim();
+
+    if (!name || isNaN(price) || price <= 0 || isNaN(category_id) || !image_url) {
+      return alert("All fields are required and must be valid");
+    }
+
+    const payload = { name, price, category_id, image_url };
+    let url = '/api/admin/products';
+    let method = 'POST';
+
+    if (currentEditId) {
+      url += `/${currentEditId}`;
+      method = 'PUT';
+    }
+
+    console.log("Submitting product update:", payload, "ID:", currentEditId);
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(currentEditId ? "✅ Product updated!" : "✅ Product added!");
+        resetForm();
+        fetchProducts();
+      } else {
+        alert("❌ " + (data.error || "Operation failed"));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Try again.");
+    }
+  }
+
+  function editProduct(id, name, price, category_id, image_url) {
+    currentEditId = id;
+    document.getElementById("name").value = name;
+    document.getElementById("price").value = price;
+    document.getElementById("category_id").value = category_id;
+    document.getElementById("image_url").value = image_url;
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("🗑️ Product deleted");
+        fetchProducts();
+      } else {
+        alert("❌ Delete failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting product");
+    }
+  }
+
+  function resetForm() {
+    currentEditId = null;
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("category_id").value = "";
+    document.getElementById("image_url").value = "";
+  }
+
+  function logout() {
+    sessionStorage.removeItem('adminToken');
+    window.location.href = "/admin-login.html";
+  }
+
+  // Initial load
+  fetchProducts();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qualitee - Sustainable T-Shirts</title>
+  <!-- Add Font Awesome for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <!-- FULL STYLE (desktop unchanged) + MOBILE OVERRIDES appended -->
+<style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: black;
+    }
+
+    .topbar {
+	
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 20px;
+      background-color: lightred;
+      font-weight: bold;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 30px;
+    }
+
+    .topbar button, .topbar a {
+      padding: 8px 8px;
+      
+      border: 1px solid black;
+      border-radius: 40px;
+      background: transparent;
+      cursor: pointer;
+      text-decoration: none;
+      color: black;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .topbar button:hover, .topbar a:hover {
+      background-color: green;
+      color: white;
+      border-color: blue;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      color: white;
+    }
+
+    .hero img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .hero-content {
+      padding-top: 140px;
+      padding-left: 10px;
+      position: relative;
+      z-index: 1;
+      height: 40%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 30px;
+      display: inline;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      padding: 0;
+      line-height: 1.2;
+    }
+
+    .hero-btn-container {
+      padding-left: 100px;
+      margin-top: auto;
+      align-self: flex-start;
+      padding-bottom: 50px;
+    }
+
+    .hero-btn {
+      padding-left: 40px;
+      position: relative;
+      font-size: 20px;
+      background: none;
+      color: white;
+      border-radius: 60px;
+      padding: 12px 50px 12px 30px;
+      border: 2px solid cornsilk;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .hero-btn-arrow {
+      position: absolute;
+      right: 0px;
+	  
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 28px;
+      color: cornsilk;
+      transition: all 0.3s ease;
+    }
+
+    .hero-btn:hover {
+      background-color: lightgreen;
+      color: black;
+      padding-right: 60px;
+    }
+
+    .hero-btn:hover .hero-btn-arrow {
+      color: black;
+      right: 20px;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .features .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .feature-box {
+      flex: 1 1 220px;
+      max-width: 250px;
+      padding: 30px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+      min-height: 250px;
+    }
+
+    .feature-box .icon-container {
+      height: 80px;
+      margin-bottom: 20px;
+      position: relative;
+      font-size: 50px;
+      line-height: 80px;
+    }
+
+    .feature-box .icon, 
+    .feature-box .icon-hover {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all 0.3s ease;
+    }
+
+    .feature-box .icon-hover {
+      opacity: 0;
+    }
+
+    .feature-box h5 {
+      margin: 15px 0;
+      font-size: 18px;
+      transition: color 0.3s ease;
+    }
+
+    .feature-box p {
+      transition: all 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-box:hover .icon {
+      opacity: 0;
+    }
+
+    .feature-box:hover .icon-hover {
+      opacity: 1;
+    }
+
+    .feature-box:hover h5 {
+      color: #28a745;
+    }
+
+    /* Bestsellers Section */
+    .bestsellers {
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .bestsellers .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .product-card {
+      background-color: #f4f4f4;
+      border-radius: 10px;
+      padding: 25px;
+      width: 280px;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image-container {
+      position: relative;
+      height: 250px;
+      margin-bottom: 15px;
+    }
+
+    .product-image, 
+    .product-image-hover {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-image-hover {
+      opacity: 0;
+    }
+
+    .product-card:hover .product-image {
+      opacity: 0;
+    }
+
+    .product-card:hover .product-image-hover {
+      opacity: 1;
+    }
+
+    .product-card h6 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      font-weight: bold;
+      color: green;
+      font-size: 18px;
+    }
+
+    /* Newsletter Section */
+    .newsletter {
+      text-align: center;
+      padding: 60px 20px;
+      background-color: #f8f8f8;
+    }
+
+    .newsletter-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .newsletter h4 {
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .newsletter-subtitle {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .newsletter-form {
+      margin: 0 auto;
+      max-width: 400px;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .newsletter input[type="email"] {
+      padding: 12px 16px;
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .newsletter input[type="email"]:focus {
+      outline: none;
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+    }
+
+    .newsletter button {
+      padding: 12px 24px;
+      border-radius: 4px;
+      background-color: #28a745;
+      color: white;
+      border: 2px solid #218838;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 100px;
+    }
+
+    .newsletter button:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .newsletter-note {
+      font-size: 12px;
+      color: #999;
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    /* About Us Section */
+    .about-us {
+      padding: 70px 20px;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+
+    .about-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .about-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    .about-box {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .team-members {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .team-member {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .team-icon {
+      font-size: 30px;
+    }
+
+    /* Contact Us Section */
+    .contact-us {
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
+
+    .contact-form {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .contact-info {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: 100%;
+      text-align: center;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .contact-form textarea {
+      min-height: 100px;
+    }
+
+    .contact-form button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .contact-form button:hover {
+      background-color: #218838;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .social-links a {
+      color: #333;
+      font-size: 24px;
+    }
+
+    /* Divider Line */
+    .section-divider {
+      height: 1px;
+      background-color: #000;
+      margin: 0;
+      border: none;
+    }
+
+    /* Footer Section */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #fff;
+      color: #000;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 20px 0;
+    }
+
+    .social-icon {
+      color: #000;
+      font-size: 28px;
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      color: #28a745;
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      font-size: 13px;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    /* Popup Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 30px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    .modal-icon {
+      font-size: 50px;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+
+    .modal h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .modal p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    /* Info state for existing subscribers */
+    .modal-info .modal-icon {
+      color: #ffc107;
+    }
+	
+	.daily-quotes-btn {
+  position: absolute;
+  top: 21px;
+  left: 1215px;
+  background-color: #ff5722;
+  color: white;
+  padding-left: 70px;
+  font-size: 10px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+  z-index: 999;
+}
+
+.daily-quotes-btn:hover {
+  background-color: #e64a19;
+}
+
+.qt{
+padding-left:n40px;
+}
+.my-orders-btn{
+padding-left:70px;
+}
+
+.my-orders-btn{
+padding-left:200px;
+}
+
+
+  /* MOBILE-ONLY OVERRIDES: desktop above unchanged */
+  @media (max-width: 768px) {
+      /* Hide desktop nav area on mobile */
+      .topbar-nav { display: none !important; }
+
+      /* Hide desktop-only floating buttons on mobile (menu will have equivalents) */
+      .daily-quotes-btn,
+      .my-orders-btn,
+      .admin-btn { display: none !important; }
+
+      /* Ensure topbar uses relative positioning on mobile so the pseudo-header can be centered */
+      .topbar {
+        position: relative;
+        padding-left: 56px; /* leave room for mobile hamburger if present */
+        padding-right: 16px;
+        min-height: 56px;
+        align-items: center;
+      }
+
+      /* Mobile top header text: Menz Tees Hub (only on small screens) */
+      .topbar::before {
+        content: "Menz Tees Hub";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 700;
+        font-size: 18px;
+        color: #000;
+        letter-spacing: 0.2px;
+        z-index: 2100;
+        white-space: nowrap;
+      }
+
+      /* Mobile hamburger (top-left) */
+      .hamburger {
+        display: flex;
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        width: 44px;
+        height: 36px;
+        gap: 6px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2200;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        background: transparent;
+        border: none;
+      }
+      .hamburger span {
+        display: block;
+        width: 28px;
+        height: 3px;
+        border-radius: 3px;
+        background: #000;
+        transition: transform 180ms ease, opacity 180ms ease;
+      }
+      .hamburger.active span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
+      .hamburger.active span:nth-child(2){ opacity: 0; transform: translateX(-10px); }
+      .hamburger.active span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
+
+      /* Mobile slide-out menu (left) */
+      .mobile-menu {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 260px;
+        height: 100%;
+        background: #fff;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+        z-index: 2050;
+        flex-direction: column;
+        padding-top: 70px;
+        transition: left 220ms ease;
+        -webkit-overflow-scrolling: touch;
+      }
+      .mobile-menu.active { left: 0; }
+
+      .mobile-menu a {
+        display: block;
+        padding: 14px 18px;
+        text-decoration: none;
+        color: #111;
+        font-size: 16px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .mobile-menu a:hover { background: #f8f8f8; color: #28a745; }
+
+      /* overlay behind mobile menu */
+      .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.45);
+        z-index: 2040;
+      }
+      .mobile-overlay.active { display: block; }
+
+      /* push hero height a bit down for mobile */
+      .hero { height: calc(100vh - 56px); }
+
+      /* Adjust some paddings on mobile for better fit */
+      .hero-content { padding-top: 90px; padding-left: 16px; }
+      .hero h1 { font-size: 28px; margin-bottom: 18px; }
+      .hero-btn-container { padding-left: 0; padding-bottom: 30px; }
+
+      .feature-box { max-width: 100%; padding: 20px; min-height: auto; }
+      .product-card { width: 100%; padding: 16px; }
+
+      .newsletter, .about-us, .contact-us { padding: 40px 16px; }
+
+      /* ABOUT US: stack boxes and align text for mobile */
+      .about-container { max-width: 100%; padding: 0 12px; }
+      .about-row { flex-direction: column; gap: 18px; align-items: stretch; }
+      .about-box { padding: 18px; text-align: left; }
+      .about-box h3 { text-align: center; margin-bottom: 10px; font-size: 18px; }
+      .about-box p { text-align: left; line-height: 1.5; font-size: 15px; }
+
+      /* Mission & Values inside about-box list formatting */
+      .about-box ul { padding-left: 18px; text-align: left; color: #555; line-height: 1.6; }
+      .about-box ul li { margin-bottom: 8px; }
+
+      .modal-content { margin: 20% auto; width: 92%; max-width: 360px; }
+
+      /* Improve readability of small text elements */
+      .topbar button, .topbar a { font-size: 14px; padding: 6px 8px; }
+    }
+	
+	/* ===== Mobile Menu & Overlay Fix ===== */
+
+/* Default: Hide on desktop */
+.mobile-menu,
+.mobile-overlay {
+  display: none;
+}
+
+/* Show only on mobile screens */
+@media (max-width: 768px) {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -250px; /* hidden off-screen initially */
+    width: 250px;
+    height: 100%;
+    background: white;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: left 0.3s ease;
+    z-index: 2000;
+  }
+
+  .mobile-menu a {
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    display: block;
+  }
+
+  .mobile-menu a:hover {
+    background: #333;
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* shown only when active */
+    z-index: 1500;
+  }
+
+  /* When menu is active */
+  .mobile-menu.active {
+    left: 0; /* slide in */
+  }
+  .mobile-overlay.active {
+    display: block;
+  }
+}
+
+.product-card:active img,
+.product-card:focus img {
+  transform: scale(1.05);
+}
+
+img.alt {
+  content: url("second-image.jpg");
+}
+
+/* =========================
+   YOUR MOBILE-ONLY OVERRIDES (exactly what you asked)
+   - remove hero image on mobile
+   - perfectly fit and center hero text on mobile
+   - hamburger hides on scroll (mobile-only) — requires the small JS provided below
+   NOTE: these rules are mobile-only and will NOT change desktop layout.
+   ========================= */
+@media (max-width: 768px) {
+
+  /* hide the hero background image on mobile */
+  .hero img {
+    display: none !important;
+  }
+
+  /* make hero a clean block with centered text and comfortable padding */
+  .hero {
+    background: #ffffff;          /* plain background on mobile */
+    color: #111;
+    height: auto !important;
+    padding: 48px 18px;
+    text-align: center;
+  }
+
+  /* center and constrain hero content */
+  .hero-content {
+    z-index: 2;
+    position: relative;
+    margin: 0 auto;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    gap: 12px;
+  }
+
+  /* fit and scale heading & subtitle for mobile */
+  .hero h1 {
+    color: #111 !important;
+    font-size: 26px !important;
+    line-height: 1.18 !important;
+    margin: 0;
+    text-shadow: none !important;
+    font-weight: 700;
+  }
+
+  .hero p,
+  .hero .subtitle {
+    color: #333 !important;
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 6px 0 0 0;
+    max-width: 94%;
+  }
+
+  /* make hero CTA buttons nice and centered on mobile */
+  .hero-btn-container {
+    padding-left: 0 !important;
+    margin-top: 14px !important;
+    align-self: center !important;
+    padding-bottom: 0 !important;
+  }
+
+  .hero-btn {
+    display: inline-block;
+    text-align: center;
+    font-size: 15px !important;
+    padding: 10px 26px !important;
+    border-radius: 8px !important;
+    border-width: 2px !important;
+    color: #fff !important;
+    background: linear-gradient(90deg,#28a745,#20c997);
+  }
+  .hero-btn:hover { transform: translateY(-2px); }
+
+  /* Hamburger: make it non-fixed so it scrolls away by default,
+     AND provide a 'hidden-on-scroll' class to completely hide it when user scrolls */
+  .hamburger {
+    position: absolute !important; /* not fixed */
+    left: 12px !important;
+    top: 12px !important;
+    width: 44px;
+    height: 36px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2200;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .hamburger span { background: #111; }
+
+  /* class applied by JS when user scrolls (mobile only) */
+  .hamburger.hidden-on-scroll {
+    opacity: 0 !important;
+    transform: translateY(-10px) scale(0.98);
+    pointer-events: none;
+  }
+
+  /* ensure mobile menus look clean with slight blur */
+  .mobile-menu {
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(4px);
+  }
+  .mobile-menu a { font-weight: 700; color: #111; }
+
+  /* slightly larger touch targets for mobile topbar items (keeps desktop intact) */
+  .topbar button, .topbar a {
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+
+  /* Small layout adjustments to keep everything tidy on small screens */
+  .feature-box { max-width: 100%; padding: 16px; }
+  .product-card { width: 100%; padding: 14px; }
+  .newsletter, .about-us, .contact-us { padding: 30px 16px; }
+  .about-container { max-width: 100%; padding: 0 12px; }
+  .about-row, .contact-row { flex-direction: column; gap: 18px; align-items: stretch; }
+  .modal-content { margin: 18% auto; width: 92%; max-width: 360px; }
+  .footer { padding: 24px 16px; }
+}
+</style>
+
+
+</head>
+<body>
+
+  <!-- Mobile hamburger (hidden on desktop by default) -->
+  <button class="hamburger" id="hamburger" aria-label="Open menu" type="button">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Mobile menu + overlay (only used on small screens) -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="#">Home</a>
+    <a href="products.html">Products</a>
+    <a href="predictor.html">Fit Predictor</a>
+    <a href="/quote.html">Daily Quotes</a>
+    <a href="check-orders.html">My Orders</a>
+    <a href="admin-login.html">Admin</a>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay" tabindex="-1"></div>
+
+  <div class="topbar">
+    <div class="topbar-nav">
+      <a href="">Home</a>
+      <a href="products.html">Products</a>
+      <a href="predictor.html">Fit Predictor</a>
+    </div>
+   
+      <!-- Add this inside your header/nav bar -->
+	  
+	  <a href="/quote.html" class="daily-quotes-btn">📝 Daily Quotes</a>
+    
+<div  class="my-orders-btn">	  
+<a href="check-orders.html" style="float: right; margin-left: 820px;">My Orders</a>
+    </div>
+<div>
+	<a href="admin-login.html" class="admin-btn">Admin Login</a>
+</div>
+  </div>
+
+  <section class="hero">
+    <img src="./images/background11.jpg" alt="Hero Background">
+    <div class="hero-content">
+      <h1>Premium Quality<br>Sustainable T-Shirts</h1>
+      <div class="hero-btn-container">
+        <a href="#bestsellers" class="hero-btn">
+          Shop Collection
+          <span class="hero-btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Why Choose Us</h2>
+    <div class="row">
+      <!-- Organic Cotton -->
+      <div class="feature-box">
+        <div class="icon-container">
+          <span class="icon">🌱</span>
+          <span class="icon-hover">🌿</span>
+        </div>
+        <h5>100% Organic Cotton</h5>
+        <p>Soft, breathable, and eco-friendly fabrics.</p>
+      </div>
+      
+      <!-- Free Shipping -->
+      <div class="feature-box">
+        <div class="icon-container">
+          <span class="icon">🚚</span>
+          <span class="icon-hover">✈️</span>
+        </div>
+        <h5>Free Shipping</h5>
+        <p>Fast, free delivery on orders above ₹499.</p>
+      </div>
+      
+      <!-- Easy Returns -->
+      <div class="feature-box">
+        <div class="icon-container">
+          <span class="icon">🔁</span>
+          <span class="icon-hover">🔄</span>
+        </div>
+        <h5>Easy Returns</h5>
+        <p>30-day hassle-free returns & exchanges.</p>
+      </div>
+      
+      <!-- Quality Guarantee -->
+      <div class="feature-box">
+        <div class="icon-container">
+          <span class="icon">✅</span>
+          <span class="icon-hover">🏆</span>
+        </div>
+        <h5>Quality Guarantee</h5>
+        <p>Trusted by 10,000+ customers worldwide.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="bestsellers" class="bestsellers">
+    <h2>Our Bestsellers</h2>
+    <p>Discover our most loved and eco-conscious T-shirts</p>
+    <div class="row">
+      <!-- V-Neck Tees -->
+      <div class="product-card">
+        <div class="product-image-container">
+          <img src="./images/v-neck1.jpg" alt="V-Neck Tees" class="product-image">
+          <img src="./images/v-neck2.jpg" alt="V-Neck Tees Back View" class="product-image-hover">
+        </div>
+        <h6>V-Neck Tees</h6>
+        <div class="price">Rs. 250</div>
+      </div>
+      
+      <!-- Graphic Tees -->
+      <div class="product-card">
+        <div class="product-image-container">
+          <img src="./images/graphics1.jpg" alt="Graphic Tees" class="product-image">
+          <img src="./images/graphics2.jpg" alt="Graphic Tees Detail" class="product-image-hover">
+        </div>
+        <h6>Graphic Tees</h6>
+        <div class="price">Rs. 280</div>
+      </div>
+      
+      <!-- Long Sleeve Tees -->
+      <div class="product-card">
+        <div class="product-image-container">
+          <img src="./images/sleeve1.jpg" alt="Long Sleeve Tees" class="product-image">
+          <img src="./images/sleeve2.jpg" alt="Long Sleeve Tees Styled" class="product-image-hover">
+        </div>
+        <h6>Long Sleeve Tees</h6>
+        <div class="price">Rs. 300</div>
+      </div>
+      
+      <!-- Combo Pack -->
+      <div class="product-card">
+        <div class="product-image-container">
+          <img src="./images/hoody2.jpg" alt="Combo Pack" class="product-image">
+          <img src="./images/hoody4.jpg" alt="Combo Pack Contents" class="product-image-hover">
+        </div>
+        <h6>Hoodies</h6>
+        <div class="price">Rs. 400</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <div class="newsletter-container">
+      <h4>Stay Updated with New Arrivals & Offers</h4>
+      <p class="newsletter-subtitle">Join our newsletter and receive 10% off on your first order.</p>
+      <form class="newsletter-form" id="newsletterForm">
+        <div class="form-group">
+          <input type="email" id="newsletterEmail" placeholder="Your email address" required>
+          <button type="submit" id="subscribeBtn">Subscribe</button>
+        </div>
+      </form>
+      <p class="newsletter-note">We respect your privacy. Unsubscribe at any time.</p>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about-us">
+    <div class="about-container">
+      <h2>About Us</h2>
+      
+      <div class="about-row">
+        <!-- Brand Story -->
+        <div class="about-box">
+          <h3 style="color: #28a745; margin-bottom: 15px;">Our Brand Story</h3>
+          <p style="line-height: 1.6; color: #555;">
+            Founded in 2025, THE T-SHIRT HUB began with a simple idea: create premium quality t-shirts that are both stylish and sustainable. 
+            What started as a small workshop has grown into a beloved brand known for its commitment to organic materials and ethical production.
+          </p>
+        </div>
+        
+        <!-- Mission & Values -->
+        <div class="about-box">
+          <h3 style="color: #28a745; margin-bottom: 15px;">Mission & Values</h3>
+          <ul style="line-height: 1.6; color: #555; padding-left: 20px; list-style-position: inside;">
+            <li style="margin-bottom: 8px;">Sustainability: Using 100% organic cotton</li>
+            <li style="margin-bottom: 8px;">Quality: Premium fabrics that last</li>
+            <li style="margin-bottom: 8px;">Ethics: Fair wages for all workers</li>
+            <li style="margin-bottom: 8px;">Innovation: Continuous improvement in design</li>
+          </ul>
+        </div>
+        
+        <!-- Team Photos -->
+        <div class="about-box">
+          <h3 style="color: #28a745; margin-bottom: 15px;">Meet Our Team</h3>
+          <div class="team-members">
+            <div class="team-member">
+              <span class="team-icon">👔</span>
+            </div>
+            <div class="team-member">
+              <span class="team-icon">👩‍💼</span>
+            </div>
+            <div class="team-member">
+              <span class="team-icon">🧑‍🎨</span>
+            </div>
+            <div class="team-member">
+              <span class="team-icon">👨‍💻</span>
+            </div>
+          </div>
+          <p style="margin-top: 15px; color: #555;">Passionate individuals dedicated to bringing you the best sustainable fashion</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section class="contact-us">
+    <div class="contact-container">
+      <h2>Contact Us</h2>
+      
+      <div class="contact-row">
+        <!-- Contact Form -->
+        <div class="contact-form">
+          <h3 style="color: #28a745; margin-bottom: 20px;">Send Us a Message</h3>
+          
+          <form>
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; color: #555;">Your Name</label>
+              <input type="text">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; color: #555;">Email Address</label>
+              <input type="email">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <label style="display: block; margin-bottom: 8px; color: #555;">Message</label>
+              <textarea></textarea>
+            </div>
+            
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+        
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <h3 style="color: #28a745; margin-bottom: 20px;">Get In Touch</h3>
+          
+          <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px; color: #333;">Store Location</h4>
+            <p style="color: #555; line-height: 1.6;">
+              123, pillaiyar kovil Street<br>
+              vettukadu, villupuram 605501<br>
+              India
+            </p>
+          </div>
+          
+          <div style="margin-bottom: 25px;">
+            <h4 style="margin-bottom: 10px; color: #333;">Contact Information</h4>
+            <p style="color: #555; line-height: 1.6;">
+              <strong>Email:</strong> menz@tshirthub.com<br>
+              <strong>Phone:</strong> +91 6374383135<br>
+              <strong>Hours:</strong> Mon-Sat, 10AM-7PM
+            </p>
+          </div>
+          
+          <div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup Modal -->
+  <div id="subscribeModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <div class="modal-icon">✓</div>
+      <h3 id="modalTitle">Thank You for Subscribing!</h3>
+      <p id="modalMessage">You've been successfully added to our newsletter list.</p>
+    </div>
+  </div>
+
+  <!-- Divider Line -->
+  <hr class="section-divider">
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">THE T-SHIRT HUB</div>
+      <div class="social-icons">
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+      </div>
+      <div class="copyright">© 2025 All Rights Reserved</div>
+    </div>
+  </footer>
+
+  <script>
+  // Mobile menu toggle
+  (function() {
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    if (hamburger && mobileMenu && mobileOverlay) {
+      function openMenu() {
+        hamburger.classList.add('active');
+        mobileMenu.classList.add('active');
+        mobileOverlay.classList.add('active');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+      }
+      function closeMenu() {
+        hamburger.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+      }
+
+      hamburger.addEventListener('click', function(e) {
+        if (mobileMenu.classList.contains('active')) closeMenu();
+        else openMenu();
+      });
+
+      mobileOverlay.addEventListener('click', closeMenu);
+
+      // close when a mobile menu link is clicked
+      mobileMenu.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', closeMenu);
+      });
+
+      // close on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
+  })();
+
+  // Newsletter form submission
+  document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
+    
+    if (!email.includes('@') || !email.includes('.')) {
+      alert('Please enter a valid email address');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      });
+      
+      const result = await response.json();
+      
+      // Update modal
+      const modal = document.getElementById('subscribeModal');
+      document.getElementById('modalTitle').textContent = 
+        result.status === 'success' ? 'Thank You!' : 'Already Subscribed';
+      document.getElementById('modalMessage').textContent = result.message;
+      document.querySelector('.modal-icon').textContent = 
+        result.status === 'success' ? '✓' : 'i';
+      document.querySelector('.modal-icon').style.color = 
+        result.status === 'success' ? '#28a745' : '#ffc107';
+      
+      modal.style.display = 'block';
+      this.reset();
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Subscription failed. Please try again.');
+    }
+  });
+
+  // Contact form submission
+  document.querySelector('.contact-form form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      name: this.querySelector('input[type="text"]').value,
+      email: this.querySelector('input[type="email"]').value,
+      message: this.querySelector('textarea').value
+    };
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
+      alert(result.message);
+      this.reset();
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Message submission failed. Please try again.');
+    }
+  });
+
+  // Close modal
+  document.querySelector('.close-btn').addEventListener('click', function() {
+    document.getElementById('subscribeModal').style.display = 'none';
+  });
+  
+  window.addEventListener('click', function(e) {
+    if (e.target === document.getElementById('subscribeModal')) {
+      document.getElementById('subscribeModal').style.display = 'none';
+    }
+  });
+  
+  const products = document.querySelectorAll(".product-card img");
+products.forEach(img => {
+  img.addEventListener("click", () => {
+    img.classList.toggle("alt");
+  });
+});
+
+  
+</script>
+
+</body>
+</html>

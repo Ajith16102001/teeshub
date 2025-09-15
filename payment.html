@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - Mens Tees Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h2 { margin-bottom: 20px; }
+    .total { font-size: 1.5em; margin-bottom: 20px; }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #0056b3; }
+    .feedback { color: red; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Payment</h2>
+    <p class="total">Total Amount: ₹<span id="totalAmount">0.00</span></p>
+    <button id="payBtn">Pay with Cash on Delivery</button>
+    <p class="feedback" id="feedback"></p>
+  </div>
+
+  <script>
+    const totalAmountSpan = document.getElementById("totalAmount");
+    const payBtn = document.getElementById("payBtn");
+    const feedback = document.getElementById("feedback");
+
+    // Get cart from sessionStorage and ensure proper structure
+    const cartFromStorage = JSON.parse(sessionStorage.getItem("cartItems") || "[]");
+    const cart = cartFromStorage.map(item => ({
+      id: item.id || null,
+      title: item.title || item.name,
+      price: parseFloat(item.price) || 0,
+      selectedSize: item.selectedSize || "M",
+      quantity: item.quantity || 1,
+      image: item.image || item.image_url || ""
+    }));
+
+    // Calculate total
+    let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    totalAmountSpan.innerText = total.toFixed(2);
+
+    payBtn.addEventListener("click", async () => {
+      const token = sessionStorage.getItem("token");
+      const username = sessionStorage.getItem("username") || "Guest";
+
+      if (!token) {
+        feedback.innerText = "Please login before placing order";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            cart: cart,
+            total: total,
+            address: "N/A",                  // Backend requires a non-empty string
+            paymentMethod: "Cash on Delivery"
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          // Save order info to sessionStorage for success page
+          sessionStorage.setItem("orderId", data.orderId || "N/A");
+          sessionStorage.setItem("orderSuccess", "true");
+          sessionStorage.setItem("totalPrice", total.toFixed(2));
+          sessionStorage.setItem("paymentMethod", "Cash on Delivery");
+          sessionStorage.setItem("orderItems", JSON.stringify(cart));
+          sessionStorage.setItem("username", username);
+
+          // Redirect to success page
+          window.location.href = "success.html";
+        } else {
+          feedback.innerText = data.error || "Checkout failed";
+        }
+      } catch (err) {
+        console.error("Checkout error:", err);
+        feedback.innerText = "Something went wrong during checkout";
+      }
+    });
+  </script>
+</body>
+</html>

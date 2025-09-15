@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mens Tees Hub - Premium T-Shirts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
+  <!-- ===================== FULL CSS (desktop preserved, mobile fixed) ===================== -->
+  <style>
+    /* ========= Reset & helpers ========= */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; padding-top: 80px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    img { max-width: 100%; display: block; height: auto; }
+
+    :root {
+      --header-h: 80px;
+      --ink: #2c3e50;
+      --accent: #e74c3c;
+      --ok: #2ecc71;
+      --shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* ================= Header & Nav (desktop unchanged) ================= */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 99;
+      background-color: #2c3e50;
+      box-shadow: var(--shadow);
+      height: var(--header-h);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .nav-left { display:flex; align-items:center; gap:12px; }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo ion-icon { font-size: 2rem; color: var(--accent); }
+
+    .home-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      margin-right: 0;
+      background: transparent;
+    }
+    .home-btn ion-icon { font-size: 1.4rem; }
+    .home-btn:hover { background-color: rgba(255,255,255,0.06); transform: translateY(-2px); }
+
+    /* ===== Header cart box (desktop match your original inline style) =====
+       — Default (desktop) size kept to 50x50 to match your previous inline style.
+       — Positioned top-right in header. Mobile sizes are adjusted below. */
+    .box {
+      width: 50px;
+      height: 50px;
+      background-color: #34495e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      z-index: 1100;
+    }
+    .box ion-icon { font-size: 1.8rem; color: #fff; display:block; }
+    .cart-count {
+      position: absolute;
+      background-color: var(--accent);
+      top: -8px;
+      right: -8px;
+      padding: 0;
+      height: 20px;
+      width: 20px;
+      line-height: 20px;
+      border-radius: 50%;
+      z-index: 1200;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #fff;
+      text-align: center;
+    }
+
+    /* ================= Container & product layout (desktop preserved) ================= */
+    .container { max-width: 1200px; padding: 2rem; margin: 0 auto; }
+    .title { font-size: 2.2rem; font-weight: 600; margin-bottom: 2rem; color: var(--ink); text-align: center; }
+
+    .filter { margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .filter label { font-size: 1.1rem; color: var(--ink); font-weight: 500; }
+    .filter select { padding: 10px 15px; font-size: 1rem; border-radius: 8px; border: 1px solid #ddd; background-color: white; cursor: pointer; min-width: 200px; }
+
+    .tshirt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .tshirt-box { position: relative; background-color: white; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 10px; transition: transform 0.3s; }
+    .tshirt-box:hover { transform: translateY(-5px); }
+    .pic { overflow: hidden; border-radius: 8px; height: 400px; width: 100%; margin: 0 auto; background:#fff; display:flex; align-items:center; justify-content:center; }
+    .tshirt-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s; }
+    .tshirt-box:hover .tshirt-img { transform: scale(1.03); }
+    .tshirt-title { font-size: 1.3rem; font-weight: 600; margin: 15px 0 10px; color: var(--ink); }
+    .tshirt-price { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 15px; display: block; }
+
+    /* Product card add-cart icon (per-card) — kept desktop look */
+    .tshirt-box ion-icon.add-cart {
+      font-size: 1.8rem;
+      color: #2ecc71;
+      cursor: pointer;
+      position: absolute;
+      right: 15px;
+      bottom: 15px;
+      border: 2px solid #2ecc71;
+      border-radius: 50%;
+      padding: 5px;
+      background: #fff;
+      transition: all 0.3s;
+    }
+    .tshirt-box ion-icon.add-cart:hover {
+      background: #2ecc71;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* ================= Size Modal (unchanged behavior) ================= */
+    .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+    .modal-content { background-color: #fefefe; margin: 10% auto; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #aaa; font-weight: bold; cursor: pointer; background: none; border: none; padding: 0; }
+    .close-modal:hover { color: #333; }
+    .modal-content h3 { margin-bottom: 25px; color: var(--ink); font-size: 1.5rem; text-align: center; font-weight: 600; }
+    .size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .size-btn { padding: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s; }
+    .size-btn:hover { background-color: var(--accent); }
+
+    /* ================= CART PANEL (slide-in) =================
+       Desktop: width 400px (same look as your original) — preserved.
+       Mobile: overridden in media queries (smaller width + internal scroll). */
+    #cart-panel {
+      position: fixed;
+      top: var(--header-h);
+      right: 0;
+      height: calc(100vh - var(--header-h));
+      width: 400px; /* desktop width — unchanged */
+      background: #fff;
+      box-shadow: -2px 0 15px rgba(0,0,0,0.2);
+      padding: 20px;
+      border-radius: 10px 0 0 10px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* hide by slide to right */
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1);
+      -webkit-overflow-scrolling: touch;
+    }
+    /* when open */
+    #cart-panel.open { transform: translateX(0); }
+
+    .cart-title { font-weight: 700; font-size: 1.15rem; color: var(--ink); margin-bottom: 10px; }
+    .cart-content { flex: 1 1 auto; overflow-y: auto; margin-bottom: 10px; padding-right: 6px; }
+    .cart-item { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .total { margin-top: 10px; }
+    .total-title { font-weight: 600; font-size: 1.05rem; color: var(--ink); }
+    .total-price { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
+    #checkout-btn { width: 100%; margin-top: 10px; background: linear-gradient(to right, #27ae60, #2ecc71); color: white; font-weight: bold; padding: 12px 0; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease; }
+    #checkout-btn:active { transform: translateY(1px); }
+    .cart-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; background: none; border: none; cursor: pointer; color: #aaa; }
+
+    /* Prevent background scroll when cart open (JS toggles .cart-open on body) */
+    body.cart-open { overflow: hidden; }
+
+    /* ================= Responsive (mobile-only overrides) ================= */
+    @media (max-width: 768px) {
+      :root { --header-h: 70px; } /* slightly smaller header on tablet */
+      header { height: var(--header-h); }
+      body { padding-top: var(--header-h); }
+
+      .logo { font-size: 1.45rem; }
+      .home-btn { font-size: 0.95rem; padding: 6px 12px; }
+
+      /* shrink product image height a bit */
+      .pic { height: 280px; }
+      .tshirt-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; }
+
+      /* shrink header cart icon on tablets */
+      .box { width: 44px; height: 44px; right: 12px; }
+      .box ion-icon { font-size: 1.5rem; }
+
+      /* cart panel width smaller on tablets */
+      #cart-panel {
+        width: 85%;
+        max-width: 420px;
+        top: var(--header-h);
+        height: calc(100vh - var(--header-h));
+        border-radius: 10px 0 0 10px;
+      }
+      .modal-content { margin-top: 12%; } /* size modal slight offset on tablet */
+    }
+
+    @media (max-width: 480px) {
+      :root { --header-h: 60px; }
+      header { height: var(--header-h); }
+      body { padding-top: var(--header-h); }
+
+      .nav { padding: 8px 12px; }
+      .logo { font-size: 1.22rem; }
+
+      /* mobile: make cart icon smaller and ensure it stays top-right */
+      .box { width: 40px; height: 40px; right: 10px; top: 50%; transform: translateY(-50%); }
+      .box ion-icon { font-size: 1.25rem !important; } /* override inline if present */
+
+      /* product cards become single column */
+      .tshirt-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .pic { height: 220px; }
+
+      /* modal (size modal) smaller */
+      .modal-content { margin: 18% auto; width: 92%; max-width: 360px; padding: 16px; }
+
+      /* CART PANEL: use nearly full width but not exceed viewport, and allow internal scroll */
+      #cart-panel {
+        width: 92%;
+        max-width: 92%;
+        right: 0;
+        top: var(--header-h);
+        height: calc(100vh - var(--header-h));
+        border-radius: 10px 0 0 10px;
+      }
+      .cart-content { max-height: calc(100vh - var(--header-h) - 140px); } /* let content scroll nicely (header + footer space) */
+      .cart-close-btn { top: 8px; right: 12px; font-size: 20px; }
+      #checkout-btn { padding: 10px 0; font-size: 1rem; }
+    }
+  </style>
+  <!-- ===================== CSS END ===================== -->
+
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="nav-left">
+        <a href="index.html" class="home-btn">
+          <ion-icon name="home"></ion-icon>
+          <span>Home</span>
+        </a>
+        <a href="#" class="logo">
+          <ion-icon name="shirt"></ion-icon>Mens Tees Hub
+        </a>
+      </div>
+
+      <!-- header cart box (kept markup, look preserved on desktop; CSS adjusts mobile) -->
+      <div class="box" id="cart-box">
+        <div class="cart-count">0</div>
+        <ion-icon name="cart" id="cart-icon"></ion-icon>
+      </div>
+    </div>
+  </header>
+
+  <!-- Size selection modal (unchanged) -->
+  <div class="modal" id="sizeModal">
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h3>Select Size for <span id="modal-product-title"></span></h3>
+      <div class="size-options">
+        <button class="size-btn" data-size="S">S</button>
+        <button class="size-btn" data-size="M">M</button>
+        <button class="size-btn" data-size="L">L</button>
+        <button class="size-btn" data-size="XL">XL</button>
+        <button class="size-btn" data-size="XXL">XXL</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="title">Discover Premium Quality T-Shirts</h2>
+    <div class="filter">
+      <label for="category">Filter by Category:</label>
+      <select id="category">
+        <option value="all">All</option>
+        <option value="V-Neck Tees">V-Neck Tees</option>
+        <option value="Long Sleeve Tees">Long Sleeve Tees</option>
+        <option value="Graphics Design Tees">Graphics Design Tees</option>
+        <option value="Hoodies">Hoodies</option>
+      </select>
+    </div>
+
+    <div class="tshirt-grid" id="productGrid">
+      <!-- Static 16 items below (kept exactly) -->
+
+      <!-- V-Neck Tees -->
+      <div class="tshirt-box" data-category="V-Neck Tees" data-id="101">
+        <div class="pic">
+          <img src="./images/v-neck3.jpg" class="tshirt-img" alt="V-Neck Tee">
+        </div>
+        <h2 class="tshirt-title">V-Neck Tee</h2>
+        <span class="tshirt-price">Rs.250</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="V-Neck Tees" data-id="102">
+        <div class="pic">
+          <img src="./images/v-neck4.jpg" class="tshirt-img" alt="V-Neck Tee">
+        </div>
+        <h2 class="tshirt-title">V-Neck Tee</h2>
+        <span class="tshirt-price">Rs.250</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="V-Neck Tees" data-id="103">
+        <div class="pic">
+          <img src="./images/v-neck1.jpg" class="tshirt-img" alt="V-Neck Tee">
+        </div>
+        <h2 class="tshirt-title">V-Neck Tee</h2>
+        <span class="tshirt-price">Rs.250</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="V-Neck Tees" data-id="104">
+        <div class="pic">
+          <img src="./images/v-neck2.jpg" class="tshirt-img" alt="V-Neck Tee">
+        </div>
+        <h2 class="tshirt-title">V-Neck Tee</h2>
+        <span class="tshirt-price">Rs.250</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <!-- Long Sleeve Tees -->
+      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="105">
+        <div class="pic">
+          <img src="./images/sleeve3.jpg" class="tshirt-img" alt="Long Sleeve Tee">
+        </div>
+        <h2 class="tshirt-title">Long Sleeve Tee</h2>
+        <span class="tshirt-price">Rs.280</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="106">
+        <div class="pic">
+          <img src="./images/sleeve4.jpg" class="tshirt-img" alt="Long Sleeve Tee">
+        </div>
+        <h2 class="tshirt-title">Long Sleeve Tee</h2>
+        <span class="tshirt-price">Rs.280</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="107">
+        <div class="pic">
+          <img src="./images/sleeve5.jpg" class="tshirt-img" alt="Long Sleeve Tee">
+        </div>
+        <h2 class="tshirt-title">Long Sleeve Tee</h2>
+        <span class="tshirt-price">Rs.280</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="108">
+        <div class="pic">
+          <img src="./images/sleeve6.jpg" class="tshirt-img" alt="Long Sleeve Tee">
+        </div>
+        <h2 class="tshirt-title">Long Sleeve Tee</h2>
+        <span class="tshirt-price">Rs.280</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <!-- Graphics Design Tees -->
+      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="109">
+        <div class="pic">
+          <img src="./images/graphics3.jpg" class="tshirt-img" alt="Graphic Design Tee">
+        </div>
+        <h2 class="tshirt-title">Graphic Design Tee</h2>
+        <span class="tshirt-price">Rs.300</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="110">
+        <div class="pic">
+          <img src="./images/graphics4.jpg" class="tshirt-img" alt="Graphic Design Tee">
+        </div>
+        <h2 class="tshirt-title">Graphic Design Tee</h2>
+        <span class="tshirt-price">Rs.300</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="111">
+        <div class="pic">
+          <img src="./images/graphics5.jpg" class="tshirt-img" alt="Graphic Design Tee">
+        </div>
+        <h2 class="tshirt-title">Graphic Design Tee</h2>
+        <span class="tshirt-price">Rs.300</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="112">
+        <div class="pic">
+          <img src="./images/graphics6.jpg" class="tshirt-img" alt="Graphic Design Tee">
+        </div>
+        <h2 class="tshirt-title">Graphic Design Tee</h2>
+        <span class="tshirt-price">Rs.300</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <!-- Hoodies -->
+      <div class="tshirt-box" data-category="Hoodies" data-id="113">
+        <div class="pic">
+          <img src="./images/hoody1.jpg" class="tshirt-img" alt="Hoodie">
+        </div>
+        <h2 class="tshirt-title">Hoodie</h2>
+        <span class="tshirt-price">Rs.400</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Hoodies" data-id="114">
+        <div class="pic">
+          <img src="./images/hoody3.jpg" class="tshirt-img" alt="Hoodie">
+        </div>
+        <h2 class="tshirt-title">Hoodie</h2>
+        <span class="tshirt-price">Rs.400</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Hoodies" data-id="115">
+        <div class="pic">
+          <img src="./images/hoody5.jpg" class="tshirt-img" alt="Hoodie">
+        </div>
+        <h2 class="tshirt-title">Hoodie</h2>
+        <span class="tshirt-price">Rs.400</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+      <div class="tshirt-box" data-category="Hoodies" data-id="116">
+        <div class="pic">
+          <img src="./images/hoody6.jpg" class="tshirt-img" alt="Hoodie">
+        </div>
+        <h2 class="tshirt-title">Hoodie</h2>
+        <span class="tshirt-price">Rs.400</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CART PANEL (slide from right). Initially closed (no .open). -->
+  <div class="cart" id="cart-panel" aria-hidden="true">
+    <div class="cart-title">Your Cart</div>
+    <div class="cart-content"></div>
+    <div class="total">
+      <div class="total-title">Total</div>
+      <div class="total-price">Rs.0.00</div>
+    </div>
+    <button id="checkout-btn">Checkout</button>
+    <button class="cart-close-btn" id="cart-close">×</button>
+  </div>
+
+  <!-- ===================== SCRIPTS (updated for robust behavior & mobile) ===================== -->
+  <script>
+/*
+  Full JS (fixed: clicking inside cart no longer closes it).
+  Replace your existing script with this block.
+*/
+(() => {
+  // ======= Selectors =======
+  const productGrid = document.getElementById('productGrid');
+  const sizeModal = document.getElementById('sizeModal');
+  const modalProductTitle = document.getElementById('modal-product-title');
+  const sizeButtons = document.querySelectorAll('.size-btn');
+  const cartCountEl = document.querySelector('.cart-count');
+  const cartBox = document.getElementById('cart-box');    // header cart wrapper
+  const cartIcon = document.getElementById('cart-icon');  // ion-icon inside header box
+  const cartCloseBtn = document.getElementById('cart-close');
+  const categorySelect = document.getElementById('category');
+  const cartPanel = document.getElementById('cart-panel');
+  const cartContentEl = document.querySelector('.cart-content');
+  const totalPriceEl = document.querySelector('.total-price');
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const sizeModalClose = document.querySelector('.close-modal');
+
+  // ======= State =======
+  // Use consistent sessionStorage key: 'cartItems'
+  let cartItems = JSON.parse(sessionStorage.getItem('cartItems') || '[]');
+  let selectedProduct = null;
+  let allProducts = [];
+
+  // ======= Helpers =======
+  function persistCart() {
+    sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }
+
+  function formatPrice(n) {
+    return 'Rs.' + Number(n).toFixed(2);
+  }
+
+  function updateCartCount() {
+    cartCountEl.textContent = cartItems.length || 0;
+  }
+
+  // safe composedPath fallback
+  function getEventPath(e) {
+    if (e.composedPath) return e.composedPath();
+    const path = [];
+    let el = e.target;
+    while (el) {
+      path.push(el);
+      el = el.parentNode;
+    }
+    path.push(document, window);
+    return path;
+  }
+
+  // find element matching selector in composed path (works with shadow DOM)
+  function findInPath(path, selector) {
+    for (const el of path) {
+      if (!el || el === window || el === document) continue;
+      try {
+        if (el.matches && el.matches(selector)) return el;
+      } catch (err) {
+        // some nodes in path may not support matches; skip safely
+      }
+    }
+    return null;
+  }
+
+  // ======= Render cart content =======
+  function updateCartContent() {
+    cartContentEl.innerHTML = '';
+    let total = 0;
+
+    if (!cartItems || cartItems.length === 0) {
+      cartContentEl.innerHTML = '<div class="empty-cart" style="padding:20px;color:#666;text-align:center;">Your cart is empty</div>';
+      totalPriceEl.textContent = formatPrice(0);
+      return;
+    }
+
+    cartItems.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${item.image || ''}" alt="${item.title}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;background:#f4f4f4;">
+            <div>
+              <div style="font-size:0.98rem;font-weight:600;">${item.title}</div>
+              <div style="font-size:0.9rem;color:#666;">Size: ${item.size}</div>
+            </div>
+          </div>
+          <ion-icon name="trash-outline" class="remove-item" data-index="${idx}" style="font-size:1.25rem; color:#e74c3c; cursor:pointer; flex:0 0 auto;" title="Remove Item"></ion-icon>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+          <div style="font-weight:600;">${formatPrice(item.price * item.quantity)}</div>
+          <div style="display:inline-flex; align-items:center; gap:8px;">
+            <button class="qty-btn decrease" data-index="${idx}" style="padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer;">-</button>
+            <span style="min-width:28px;text-align:center;">${item.quantity}</span>
+            <button class="qty-btn increase" data-index="${idx}" style="padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer;">+</button>
+          </div>
+        </div>
+      `;
+      cartContentEl.appendChild(div);
+      total += (item.price * item.quantity);
+    });
+
+    totalPriceEl.textContent = formatPrice(total);
+  }
+
+  // ======= Size modal logic =======
+  function openSizeModal(product) {
+    selectedProduct = product;
+    modalProductTitle.textContent = product.title;
+    sizeModal.style.display = 'block';
+  }
+
+  function closeSizeModal() {
+    sizeModal.style.display = 'none';
+    selectedProduct = null;
+  }
+
+  // close size modal button
+  if (sizeModalClose) {
+    sizeModalClose.addEventListener('click', closeSizeModal);
+  }
+
+  // size selection
+  sizeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!selectedProduct) return;
+      const selectedSize = btn.dataset.size;
+      const exists = cartItems.some(i => i.id == selectedProduct.id && i.size === selectedSize);
+      if (exists) {
+        alert(`This item (${selectedProduct.title} - ${selectedSize}) is already in your cart.`);
+        closeSizeModal();
+        return;
+      }
+      const item = {
+        id: selectedProduct.id,
+        title: selectedProduct.title,
+        price: Number(selectedProduct.price) || 0,
+        image: selectedProduct.image || '',
+        size: selectedSize,
+        quantity: 1
+      };
+      cartItems.push(item);
+      persistCart();
+      updateCartCount();
+      updateCartContent();
+      closeSizeModal();
+      alert(`Added ${item.title} - ${item.size} to cart`);
+    });
+  });
+
+  // ======= Add-to-cart (delegated) =======
+  productGrid.addEventListener('click', (e) => {
+    const path = getEventPath(e);
+    // find element in path that has class add-cart (works if inner svg clicked)
+    const addBtn = findInPath(path, '.add-cart');
+    if (!addBtn) return;
+    const box = addBtn.closest('.tshirt-box') || findInPath(path, '.tshirt-box'); // fallback if closest fails due to shadow
+    if (!box) return;
+
+    const product = {
+      id: box.dataset.id || String(Date.now()),
+      title: (box.querySelector('.tshirt-title') && box.querySelector('.tshirt-title').textContent.trim()) || 'Product',
+      price: parseFloat((box.querySelector('.tshirt-price') && box.querySelector('.tshirt-price').textContent.replace(/Rs\.?/g, '').trim()) || '0') || 0,
+      image: (box.querySelector('img') && box.querySelector('img').src) || '',
+      category: box.dataset.category || 'General'
+    };
+    openSizeModal(product);
+  });
+
+  // ======= Cart panel open/close =======
+  function openCartPanel() {
+    cartPanel.classList.add('open');
+    cartPanel.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cart-open'); // prevents background scroll if desired
+    updateCartContent();
+  }
+
+  function closeCartPanel() {
+    cartPanel.classList.remove('open');
+    cartPanel.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cart-open');
+  }
+
+  // header cart box click toggles panel
+  if (cartBox) {
+    cartBox.addEventListener('click', (e) => {
+      // If user clicks the trash or inside panel inadvertently, we want toggle only when they click the header box
+      const isOpen = cartPanel.classList.contains('open');
+      if (isOpen) closeCartPanel(); else openCartPanel();
+    });
+  }
+
+  // close button inside panel
+  if (cartCloseBtn) cartCloseBtn.addEventListener('click', closeCartPanel);
+
+  // handle escape key to close panel
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (cartPanel.classList.contains('open')) closeCartPanel();
+      if (sizeModal.style.display === 'block') closeSizeModal();
+    }
+  });
+
+  // ======= Click delegation: handle remove & qty buttons inside cart safely using composedPath =======
+  document.addEventListener('click', (e) => {
+    const path = getEventPath(e);
+
+    // If clicked a remove button inside cart
+    const removeEl = findInPath(path, '.remove-item');
+    if (removeEl) {
+      const idx = Number(removeEl.dataset.index);
+      if (!Number.isNaN(idx) && cartItems[idx]) {
+        const confirmRemove = confirm('Are you sure you want to remove this item from your cart?');
+        if (!confirmRemove) return;
+        cartItems.splice(idx, 1);
+        persistCart();
+        updateCartCount();
+        updateCartContent();
+      }
+      return; // processed, do not proceed to outside-close logic
+    }
+
+    // If clicked a qty button (increase/decrease)
+    const qtyEl = findInPath(path, '.qty-btn');
+    if (qtyEl) {
+      const idx = Number(qtyEl.dataset.index);
+      if (!Number.isNaN(idx) && cartItems[idx]) {
+        if (qtyEl.classList.contains('increase')) {
+          cartItems[idx].quantity += 1;
+        } else if (qtyEl.classList.contains('decrease')) {
+          if (cartItems[idx].quantity > 1) cartItems[idx].quantity -= 1;
+        }
+        persistCart();
+        updateCartCount();
+        updateCartContent();
+      }
+      return; // processed
+    }
+
+    // If clicked outside cart-panel on small screens --> close
+    // But first check if the click happened inside cartPanel or header cart box or size modal (so clicks inside won't close)
+    const clickedInsideCart = path.includes(cartPanel) || path.includes(cartBox) || path.includes(sizeModal);
+    if (!clickedInsideCart && cartPanel.classList.contains('open') && window.innerWidth <= 768) {
+      // if panel open and user clicked outside on small screens, close
+      closeCartPanel();
+    }
+  });
+
+  // ======= Category filter (unchanged) =======
+  if (categorySelect) {
+    categorySelect.addEventListener('change', () => {
+      const value = categorySelect.value;
+      document.querySelectorAll('.tshirt-box').forEach(box => {
+        box.style.display = (value === 'all' || box.dataset.category === value) ? 'block' : 'none';
+      });
+    });
+  }
+
+  // ======= Checkout =======
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+      if (!cartItems || cartItems.length === 0) {
+        alert('Your cart is empty. Please add items before checkout.');
+        return;
+      }
+      const token = sessionStorage.getItem('customerToken'); // your login logic
+      if (!token) {
+        alert('Please login to continue.');
+        window.location.href = 'login.html';
+        return;
+      }
+      // proceed to payment
+      window.location.href = 'payment.html';
+    });
+  }
+
+  // ======= Dynamic products (optional fetch) =======
+  async function fetchProducts() {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.products)) {
+        allProducts = data.products.map(p => ({
+          id: p.id,
+          title: p.name,
+          price: p.price,
+          image: p.image_url,
+          category: p.category
+        }));
+        prependDynamicProducts(allProducts);
+      }
+    } catch (err) {
+      // ignore if API not present
+      console.warn('fetchProducts failed:', err);
+    }
+  }
+
+  function prependDynamicProducts(products) {
+    const grid = document.getElementById('productGrid');
+    const staticItems = [...grid.children];
+    products.reverse().forEach(p => {
+      const box = document.createElement('div');
+      box.className = 'tshirt-box';
+      box.dataset.category = p.category;
+      box.dataset.id = p.id;
+      box.innerHTML = `
+        <div class="pic">
+          <img src="${p.image}" class="tshirt-img" alt="${p.title}">
+        </div>
+        <h2 class="tshirt-title">${p.title}</h2>
+        <span class="tshirt-price">Rs.${p.price}</span>
+        <ion-icon name="cart" class="add-cart"></ion-icon>
+      `;
+      grid.insertBefore(box, staticItems[0] || null);
+    });
+    // no need to reattach listeners because we use delegation on productGrid
+  }
+
+  // ======= Init =======
+  updateCartCount();
+  updateCartContent();
+  cartPanel.classList.remove('open');
+  cartPanel.setAttribute('aria-hidden', 'true');
+
+  // attempt to fetch dynamic products (optional)
+  fetchProducts();
+
+  // react to storage changes from other tabs
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'cartItems') {
+      try {
+        cartItems = JSON.parse(e.newValue || '[]');
+      } catch (err) {
+        cartItems = [];
+      }
+      updateCartCount();
+      updateCartContent();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

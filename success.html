@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Success - Mens Tees Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h2 { text-align: center; color: green; margin-bottom: 20px; }
+    .user-name, .shipping-address { font-size: 1.2em; margin-bottom: 15px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 12px; text-align: center; }
+    th { background-color: #007bff; color: #fff; }
+    .total, .payment-method { font-size: 1.2em; margin-bottom: 10px; }
+    .btn-home {
+      display: block;
+      width: 200px;
+      margin: 0 auto;
+      padding: 12px;
+      text-align: center;
+      background: #007bff;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .btn-home:hover { background: #0056b3; }
+    .empty { text-align: center; color: red; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>✅ Order Placed Successfully!</h2>
+    <p class="user-name" id="username"></p>
+    <p class="shipping-address" id="shippingAddress"></p>
+
+    <table id="orderTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Size</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p class="total" id="totalAmount"></p>
+    <p class="payment-method" id="paymentMethod"></p>
+    <a href="index.html" class="btn-home">Back to Home</a>
+    <p class="empty" id="emptyMsg"></p>
+  </div>
+
+  <script>
+    const username = sessionStorage.getItem("username") || "Guest";
+    const orderItems = JSON.parse(sessionStorage.getItem("orderItems") || "[]");
+    const total = sessionStorage.getItem("totalPrice") || "0.00";
+    const paymentMethod = sessionStorage.getItem("paymentMethod") || "N/A";
+    const shippingAddress = sessionStorage.getItem("shippingAddress") || "N/A";
+    const orderSuccess = sessionStorage.getItem("orderSuccess");
+
+    const usernameEl = document.getElementById("username");
+    const shippingEl = document.getElementById("shippingAddress");
+    const tableBody = document.querySelector("#orderTable tbody");
+    const totalEl = document.getElementById("totalAmount");
+    const paymentEl = document.getElementById("paymentMethod");
+    const emptyMsg = document.getElementById("emptyMsg");
+
+    if (!orderSuccess || orderItems.length === 0) {
+      emptyMsg.innerText = "No order details available.";
+      document.getElementById("orderTable").style.display = "none";
+      totalEl.style.display = "none";
+      paymentEl.style.display = "none";
+      shippingEl.style.display = "none";
+    } else {
+      usernameEl.innerText = `Hello, ${username}! Here are your order details:`;
+      shippingEl.innerText = `Shipping Address: ${shippingAddress}`;
+
+      orderItems.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.selectedSize || 'M'}</td>
+          <td>${item.quantity || 1}</td>
+          <td>₹${(item.price * (item.quantity || 1)).toFixed(2)}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      totalEl.innerText = `Total Amount: ₹${parseFloat(total).toFixed(2)}`;
+      paymentEl.innerText = `Payment Method: ${paymentMethod}`;
+    }
+
+    // Clear sessionStorage for order after showing success
+    sessionStorage.removeItem("cartItems");
+    sessionStorage.removeItem("orderItems");
+    sessionStorage.removeItem("orderSuccess");
+    sessionStorage.removeItem("totalPrice");
+    sessionStorage.removeItem("paymentMethod");
+    sessionStorage.removeItem("shippingAddress");
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Quote Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #message {
+      text-align: center;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2 id="daily-topic">Daily Quote Topic: Loading...</h2>
+
+    <input type="text" id="name" placeholder="Your Name">
+    <input type="email" id="email" placeholder="Your Email">
+    <textarea id="quote" placeholder="Write your quote here..."></textarea>
+
+    <button onclick="submitQuote()">Submit Quote</button>
+    <p id="message"></p>
+  </div>
+
+  <script>
+  
+  
+  async function loadDailyTopic() {
+  try {
+    const res = await fetch('/api/daily-topic');
+    const data = await res.json();
+    document.getElementById("daily-topic").textContent = "Daily Quote Topic: " + data.topic;
+  } catch (err) {
+    console.error("Failed to load topic:", err);
+    document.getElementById("daily-topic").textContent = "Daily Quote Topic: Unavailable";
+  }
+}
+
+loadDailyTopic();
+
+  
+  
+  
+    // ✅ Load daily topic from backend
+    async function loadDailyTopic() {
+      try {
+        const res = await fetch('/api/daily-topic');
+        const data = await res.json();
+        document.getElementById("daily-topic").textContent = "Daily Quote Topic: " + data.topic;
+      } catch (err) {
+        console.error("Failed to load topic:", err);
+        document.getElementById("daily-topic").textContent = "Daily Quote Topic: Unavailable";
+      }
+    }
+
+    // ✅ Handle quote submission
+    async function submitQuote() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const quote = document.getElementById("quote").value.trim();
+      const message = document.getElementById("message");
+
+      if (!name || !email || !quote) {
+        message.textContent = "Please fill all fields.";
+        message.style.color = "red";
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/submit-quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, quote })
+        });
+
+        const data = await res.json();
+
+        if (data.error || !res.ok) {
+          message.textContent = data.message || "Submission failed.";
+          message.style.color = "red";
+          return;
+        }
+
+        alert(
+          "Thank you for submitting your quote!\n" +
+          "If you're selected as the winner, you’ll receive a coupon code via email.\n" +
+          "Stay tuned — you can use that coupon on your next purchase!"
+        );
+
+        message.textContent = data.message || "Quote submitted!";
+        message.style.color = "green";
+
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("quote").value = "";
+
+      } catch (err) {
+        console.error(err);
+        message.textContent = "Submission failed.";
+        message.style.color = "red";
+      }
+    }
+
+    // Call on page load
+    loadDailyTopic();
+  </script>
+
+</body>
+</html>

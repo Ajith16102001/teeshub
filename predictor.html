@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qualitee - Fit Predictor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <style>
+    :root {
+      --primary: #28a745;
+      --primary-light: #5cb85c;
+      --primary-dark: #218838;
+      --secondary: #6c757d;
+      --light: rgba(248, 249, 250, 0.8);
+      --dark: #343a40;
+      --white: rgba(255, 255, 255, 0.9);
+      --gray: rgba(233, 236, 239, 0.8);
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                  url('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--white);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .fit-predictor {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      padding: 30px 20px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .radio-option {
+      flex: 1 1 100px;
+    }
+
+    .radio-label {
+      display: block;
+      padding: 10px 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .radio-option input {
+      display: none;
+    }
+
+    .radio-option input:checked + .radio-label {
+      background-color: var(--primary);
+      border-color: var(--primary-dark);
+      box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .results {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      padding: 25px;
+      text-align: center;
+      display: none;
+    }
+
+    .results h2 {
+      color: var(--primary);
+      font-size: 1.6rem;
+    }
+
+    .size-result {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 20px 0;
+    }
+
+    .size-chart {
+      margin-top: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    .size-chart table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .size-chart th, .size-chart td {
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    .size-chart th {
+      background-color: rgba(40, 167, 69, 0.7);
+      font-size: 0.8rem;
+    }
+
+    .highlight {
+      background-color: rgba(40, 167, 69, 0.3) !important;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .form-control { width: 80%; }
+      .btn { width: auto; padding: 14px 30px; }
+      .button-group { flex-direction: row; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Find Your Perfect Fit</h1>
+      <p>Answer a few simple questions and we'll recommend the best T-shirt size for your body type and preferences.</p>
+    </div>
+
+    <div class="fit-predictor" id="fitPredictorForm">
+      <form id="sizeCalculator">
+        <div class="form-group">
+          <label for="height">Your Height (cm)</label>
+          <input type="number" id="height" class="form-control" min="140" max="220" placeholder="e.g. 175" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weight">Your Weight (kg)</label>
+          <input type="number" id="weight" class="form-control" min="40" max="150" placeholder="e.g. 70" required>
+        </div>
+
+        <div class="form-group">
+          <label for="chest">Chest Circumference (cm)</label>
+          <input type="number" id="chest" class="form-control" min="70" max="150" placeholder="Measure around the fullest part" required>
+          <small style="display: block; margin-top: 8px; color: rgba(255,255,255,0.7);">Measure around the fullest part of your chest</small>
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Fit Style</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="fit-slim" name="fit" value="slim" checked>
+              <label for="fit-slim" class="radio-label">
+                <i class="fas fa-user" style="margin-right: 8px;"></i>Slim Fit
+              </label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="fit-regular" name="fit" value="regular">
+              <label for="fit-regular" class="radio-label">
+                <i class="fas fa-user" style="margin-right: 8px;"></i>Regular Fit
+              </label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="fit-loose" name="fit" value="loose">
+              <label for="fit-loose" class="radio-label">
+                <i class="fas fa-user" style="margin-right: 8px;"></i>Loose Fit
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>How do you like your T-shirts to fit?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="pref-tight" name="preference" value="tight">
+              <label for="pref-tight" class="radio-label">
+                <i class="fas fa-tshirt" style="margin-right: 8px;"></i>More fitted
+              </label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="pref-normal" name="preference" value="normal" checked>
+              <label for="pref-normal" class="radio-label">
+                <i class="fas fa-tshirt" style="margin-right: 8px;"></i>Standard fit
+              </label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="pref-loose" name="preference" value="loose">
+              <label for="pref-loose" class="radio-label">
+                <i class="fas fa-tshirt" style="margin-right: 8px;"></i>More relaxed
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn">
+          <i class="fas fa-calculator" style="margin-right: 10px;"></i>Calculate My Size
+        </button>
+      </form>
+    </div>
+
+    <div class="results" id="results">
+      <h2>Your Recommended Size</h2>
+      <div class="size-result" id="recommendedSize">M</div>
+      <p style="max-width: 600px; margin: 0 auto 30px; color: rgba(255,255,255,0.8);">
+        Based on your measurements and preferences, this size should provide the best fit for comfort and style.
+      </p>
+      
+      <div class="size-chart">
+        <h3><i class="fas fa-ruler-combined" style="margin-right: 10px;"></i>Size Guide</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Chest (cm)</th>
+              <th>Height (cm)</th>
+              <th>Weight (kg)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="size-xs">
+              <td>XS</td>
+              <td>81-86</td>
+              <td>160-170</td>
+              <td>50-60</td>
+            </tr>
+            <tr id="size-s">
+              <td>S</td>
+              <td>87-93</td>
+              <td>165-175</td>
+              <td>60-70</td>
+            </tr>
+            <tr id="size-m">
+              <td>M</td>
+              <td>94-101</td>
+              <td>170-180</td>
+              <td>70-80</td>
+            </tr>
+            <tr id="size-l">
+              <td>L</td>
+              <td>102-109</td>
+              <td>175-185</td>
+              <td>80-90</td>
+            </tr>
+            <tr id="size-xl">
+              <td>XL</td>
+              <td>110-117</td>
+              <td>180-190</td>
+              <td>90-100</td>
+            </tr>
+            <tr id="size-xxl">
+              <td>XXL</td>
+              <td>118-125</td>
+              <td>185-195</td>
+              <td>100-110</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="button-group">
+        <button class="btn" id="recalculateBtn">
+          <i class="fas fa-redo" style="margin-right: 10px;"></i>Recalculate
+        </button>
+        <button class="btn btn-secondary" id="backToHomeBtn">
+          <i class="fas fa-home" style="margin-right: 10px;"></i>Back to Home
+        </button>
+      </div>
+    </div>
+  </div>
+<script>
+  document.getElementById('sizeCalculator').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const height = document.getElementById('height').value;
+    const weight = document.getElementById('weight').value;
+    const chest = document.getElementById('chest').value;
+    const fit = document.querySelector('input[name="fit"]:checked')?.value;
+    const preference = document.querySelector('input[name="preference"]:checked')?.value;
+
+    if (!height || !weight || !chest || !fit || !preference) {
+      alert("Please fill in all fields before submitting.");
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/calculate-size', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ height, weight, chest, fit, preference }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.size) {
+        throw new Error(data.error || 'Invalid response from server');
+      }
+
+      document.getElementById('fitPredictorForm').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('recommendedSize').textContent = data.size;
+
+      document.querySelectorAll('tbody tr').forEach(row => {
+        row.classList.remove('highlight');
+      });
+      const highlightRow = document.getElementById(`size-${data.size.toLowerCase()}`);
+      if (highlightRow) highlightRow.classList.add('highlight');
+
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error calculating size. Please try again.');
+    }
+  });
+
+  document.getElementById('recalculateBtn').addEventListener('click', function () {
+    document.getElementById('fitPredictorForm').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('sizeCalculator').reset();
+    document.getElementById('fitPredictorForm').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  document.getElementById('backToHomeBtn').addEventListener('click', function () {
+    window.location.href = '/';
+  });
+
+  function getPreviousSize(size) {
+    const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const index = sizes.indexOf(size);
+    return index > 0 ? sizes[index - 1] : size;
+  }
+
+  function getNextSize(size) {
+    const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const index = sizes.indexOf(size);
+    return index < sizes.length - 1 ? sizes[index + 1] : size;
+  }
+</script>
+
+</body>
+</html>

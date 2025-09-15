@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      width: 300px;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      color: #fff;
+    }
+
+    .login-box input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1abc9c;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-box button:hover {
+      background-color: #16a085;
+    }
+
+    #message {
+      color: yellow;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Admin Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="adminLogin()">Login</button>
+    <p id="message"></p>
+  </div>
+<script>
+  async function adminLogin() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const message = document.getElementById("message");
+
+    if (!email || !password) {
+      message.textContent = "Please fill all fields.";
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        message.textContent = data.error || "Login failed.";
+        return;
+      }
+
+      // ✅ Store token and redirect
+      sessionStorage.setItem("adminToken", data.token);
+      sessionStorage.setItem("adminName", data.name || "Admin");
+
+      window.location.href = "/admin-dashboard.html";
+
+    } catch (err) {
+      console.error(err);
+      message.textContent = "Something went wrong.";
+    }
+  }
+</script>
+
+</body>
+</html>
