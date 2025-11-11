@@ -938,125 +938,92 @@
       }, 2000);
     }
 
-    // Process payment
-    document.getElementById("payBtn").addEventListener("click", async function() {
-      const payBtn = this;
-      const feedback = document.getElementById("feedback");
-      
-      if (!areDetailsSaved) {
-        feedback.textContent = "Please save your shipping details first by clicking 'Save Shipping Details'";
-        feedback.className = "message error";
-        feedback.style.display = "flex";
-        return;
-      }
-      
-      if (!areShippingDetailsValid()) {
-        feedback.textContent = "Please complete the shipping details first";
-        feedback.className = "message error";
-        feedback.style.display = "flex";
-        return;
-      }
-      
-      const token = sessionStorage.getItem("token");
-      if (!token) {
-        feedback.textContent = "Please login to proceed with payment";
-        feedback.className = "message error";
-        feedback.style.display = "flex";
-        return;
-      }
-      
-      if (cart.length === 0) {
-        feedback.textContent = "Your cart is empty";
-        feedback.className = "message error";
-        feedback.style.display = "flex";
-        return;
-      }
-      
-      // Show loading state
-      payBtn.disabled = true;
-      payBtn.textContent = "Processing...";
-      feedback.textContent = "";
-      feedback.style.display = "none";
-      
-      try {
-        const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        
-        const username = sessionStorage.getItem("username") || "Guest";
-        
-        const requestBody = {
-          cart: cart,
-          total: total,
-          address: `${shippingDetails.name}, ${shippingDetails.address}, ${shippingDetails.phone}`,
-          paymentMethod: "Cash on Delivery",
-          username: username
-        };
-        
-        const res = await fetch("/api/checkout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-          },
-          body: JSON.stringify(requestBody)
-        });
-        
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`HTTP error! status: ${res.status}, body: ${errorText}`);
-        }
-        
-        const data = await res.json();
-        
-        if (data.success) {
-          // Clear cart after successful order
-          sessionStorage.removeItem("mt_cart");
-          
-          // Save order info to sessionStorage for success page
-          sessionStorage.setItem("orderId", data.orderId || "N/A");
-          sessionStorage.setItem("orderNumber", data.orderNumber || "N/A");
-          sessionStorage.setItem("orderSuccess", "true");
-          sessionStorage.setItem("totalPrice", total.toFixed(2));
-          sessionStorage.setItem("paymentMethod", "Cash on Delivery");
-          sessionStorage.setItem("orderItems", JSON.stringify(cart));
-          sessionStorage.setItem("username", username);
-          sessionStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
-          
-          // Clear shipping details from THIS page so next time it's fresh
-          sessionStorage.removeItem("shippingDetails");
-          areDetailsSaved = false;
-          
-          // Show success message
-          feedback.textContent = "Order placed successfully! Redirecting...";
-          feedback.className = "message success";
-          feedback.style.display = "flex";
-          
-          // Redirect to success page
-          setTimeout(() => {
-            window.location.href = "success.html";
-          }, 1500);
-        } else {
-          throw new Error(data.error || "Checkout failed");
-        }
-      } catch (err) {
-        console.error("Checkout error:", err);
-        
-        if (err.message.includes("Failed to fetch")) {
-          feedback.textContent = "Network error: Unable to connect to server";
-        } else if (err.message.includes("HTTP error! status: 401")) {
-          feedback.textContent = "Authentication failed. Please login again.";
-          sessionStorage.removeItem("token");
-        } else {
-          feedback.textContent = "Something went wrong during checkout. Please try again.";
-        }
-        
-        feedback.className = "message error";
-        feedback.style.display = "flex";
-      } finally {
-        updatePaymentButtonState();
-        payBtn.textContent = "Pay with Cash on Delivery";
-      }
-    });
-
+   // Process payment - Simplified for GitHub Pages
+document.getElementById("payBtn").addEventListener("click", async function() {
+  const payBtn = this;
+  const feedback = document.getElementById("feedback");
+  
+  // Validation checks...
+  if (!areDetailsSaved) {
+    feedback.textContent = "Please save your shipping details first by clicking 'Save Shipping Details'";
+    feedback.className = "message error";
+    feedback.style.display = "flex";
+    return;
+  }
+  
+  if (!areShippingDetailsValid()) {
+    feedback.textContent = "Please complete the shipping details first";
+    feedback.className = "message error";
+    feedback.style.display = "flex";
+    return;
+  }
+  
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    feedback.textContent = "Please login to proceed with payment";
+    feedback.className = "message error";
+    feedback.style.display = "flex";
+    return;
+  }
+  
+  if (cart.length === 0) {
+    feedback.textContent = "Your cart is empty";
+    feedback.className = "message error";
+    feedback.style.display = "flex";
+    return;
+  }
+  
+  // Show loading state
+  payBtn.disabled = true;
+  payBtn.textContent = "Processing...";
+  feedback.textContent = "Processing your order... (Demo Mode)";
+  feedback.className = "message success";
+  feedback.style.display = "flex";
+  
+  try {
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const username = sessionStorage.getItem("username") || "Guest";
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Mock successful order for GitHub Pages
+    sessionStorage.removeItem("mt_cart");
+    sessionStorage.setItem("orderId", "DEMO_" + Date.now());
+    sessionStorage.setItem("orderNumber", "ORD" + Math.floor(100000 + Math.random() * 900000));
+    sessionStorage.setItem("orderSuccess", "true");
+    sessionStorage.setItem("totalPrice", total.toFixed(2));
+    sessionStorage.setItem("paymentMethod", "Cash on Delivery");
+    sessionStorage.setItem("orderItems", JSON.stringify(cart));
+    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("shippingDetails", JSON.stringify(shippingDetails));
+    sessionStorage.setItem("orderTimestamp", Date.now().toString());
+    
+    // Clear current shipping details
+    sessionStorage.removeItem("shippingDetails");
+    areDetailsSaved = false;
+    
+    feedback.textContent = "Order placed successfully! Redirecting...";
+    feedback.className = "message success";
+    
+    setTimeout(() => {
+      window.location.href = "success.html";
+    }, 1000);
+    
+  } catch (err) {
+    console.error("Checkout error:", err);
+    feedback.textContent = "Order placed successfully! Redirecting...";
+    feedback.className = "message success";
+    
+    // Force success even on error for demo
+    setTimeout(() => {
+      window.location.href = "success.html";
+    }, 1000);
+  } finally {
+    updatePaymentButtonState();
+    payBtn.textContent = "Pay with Cash on Delivery";
+  }
+});
     // Helper function to escape HTML
     function escapeHtml(str) {
       if (!str) return '';
