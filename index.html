@@ -6,7 +6,7 @@
   <title>Qualitee - Sustainable T-Shirts</title>
   <!-- Add Font Awesome for social icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <!-- FULL STYLE (desktop unchanged) + MOBILE OVERRIDES appended -->
+  
 <style>
     * {
       margin: 0;
@@ -17,46 +17,108 @@
     body {
       font-family: Arial, sans-serif;
       color: black;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* Custom cursor */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #28a745;
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+    }
+
+    .cursor-outline {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #28a745;
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.2s ease-out;
+    }
+
+    /* Scroll progress indicator */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(to right, #28a745, #2196F3);
+      z-index: 1001;
+      transition: width 0.3s ease;
     }
 
     .topbar {
-	
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 5px 20px;
-      background-color: lightred;
+      padding: 12px 20px;
+      background-color: #fff;
       font-weight: bold;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .topbar.scrolled {
+      padding: 8px 20px;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
     }
 
     .topbar-nav {
       display: flex;
       gap: 30px;
+      margin-left: 20px;
     }
 
     .topbar button, .topbar a {
-      padding: 8px 8px;
-      
+      padding: 8px 16px;
       border: 1px solid black;
       border-radius: 40px;
       background: transparent;
-      cursor: pointer;
+      cursor: none;
       text-decoration: none;
       color: black;
       font-size: 14px;
       transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .topbar button:hover, .topbar a:hover {
-      background-color: green;
+      background-color: #28a745;
       color: white;
-      border-color: blue;
+      border-color: #28a745;
+      transform: translateY(-2px);
+    }
+
+    .topbar-right {
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
 
     .hero {
       position: relative;
       height: 100vh;
       color: white;
+      overflow: hidden;
     }
 
     .hero img {
@@ -67,16 +129,22 @@
       height: 100%;
       object-fit: cover;
       z-index: 0;
+      transition: transform 10s ease;
+    }
+
+    .hero:hover img {
+      transform: scale(1.05);
     }
 
     .hero-content {
       padding-top: 140px;
-      padding-left: 10px;
+      padding-left: 80px;
       position: relative;
       z-index: 1;
       height: 40%;
       display: flex;
       flex-direction: column;
+      max-width: 600px;
     }
 
     .hero h1 {
@@ -86,10 +154,22 @@
       text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
       padding: 0;
       line-height: 1.2;
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .hero-btn-container {
-      padding-left: 100px;
+      padding-left: 0;
       margin-top: auto;
       align-self: flex-start;
       padding-bottom: 50px;
@@ -104,16 +184,31 @@
       border-radius: 60px;
       padding: 12px 50px 12px 30px;
       border: 2px solid cornsilk;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.3s ease;
       text-decoration: none;
       display: inline-block;
+      overflow: hidden;
+    }
+
+    .hero-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: all 0.6s ease;
+    }
+
+    .hero-btn:hover::before {
+      left: 100%;
     }
 
     .hero-btn-arrow {
       position: absolute;
-      right: 0px;
-	  
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       font-size: 28px;
@@ -122,20 +217,42 @@
     }
 
     .hero-btn:hover {
-      background-color: lightgreen;
-      color: black;
+      background-color: #28a745;
+      color: white;
       padding-right: 60px;
+      transform: translateY(-3px);
+      border-color: #28a745;
     }
 
     .hero-btn:hover .hero-btn-arrow {
-      color: black;
-      right: 20px;
+      color: white;
+      right: 30px;
     }
 
     /* Features Section */
     .features {
-      padding: 50px 20px;
+      padding: 100px 20px;
       text-align: center;
+      background-color: #f9f9f9;
+    }
+
+    .section-title {
+      font-size: 36px;
+      margin-bottom: 60px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: #28a745;
+      border-radius: 2px;
     }
 
     .features .row {
@@ -148,13 +265,19 @@
     .feature-box {
       flex: 1 1 220px;
       max-width: 250px;
-      padding: 30px;
-      background-color: #f9f9f9;
+      padding: 40px 25px;
+      background-color: white;
       border-radius: 10px;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
       position: relative;
       overflow: hidden;
-      min-height: 250px;
+      min-height: 280px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .feature-box:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     }
 
     .feature-box .icon-container {
@@ -185,18 +308,17 @@
 
     .feature-box p {
       transition: all 0.3s ease;
-    }
-
-    .feature-box:hover {
-      transform: translateY(-5px);
+      color: #666;
     }
 
     .feature-box:hover .icon {
       opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
     }
 
     .feature-box:hover .icon-hover {
       opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .feature-box:hover h5 {
@@ -205,8 +327,9 @@
 
     /* Bestsellers Section */
     .bestsellers {
-      padding: 70px 20px;
+      padding: 100px 20px;
       text-align: center;
+      background-color: white;
     }
 
     .bestsellers .row {
@@ -221,17 +344,22 @@
       border-radius: 10px;
       padding: 25px;
       width: 280px;
-      transition: transform 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
     .product-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     }
 
     .product-image-container {
       position: relative;
       height: 250px;
       margin-bottom: 15px;
+      overflow: hidden;
+      border-radius: 10px;
     }
 
     .product-image, 
@@ -243,19 +371,22 @@
       position: absolute;
       top: 0;
       left: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.5s ease;
     }
 
     .product-image-hover {
       opacity: 0;
+      transform: scale(1.1);
     }
 
     .product-card:hover .product-image {
       opacity: 0;
+      transform: scale(1.05);
     }
 
     .product-card:hover .product-image-hover {
       opacity: 1;
+      transform: scale(1);
     }
 
     .product-card h6 {
@@ -265,14 +396,14 @@
 
     .price {
       font-weight: bold;
-      color: green;
+      color: #28a745;
       font-size: 18px;
     }
 
     /* Newsletter Section */
     .newsletter {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       background-color: #f8f8f8;
     }
 
@@ -282,16 +413,16 @@
     }
 
     .newsletter h4 {
-      font-size: 22px;
+      font-size: 28px;
       margin-bottom: 12px;
       color: #333;
       font-weight: 600;
     }
 
     .newsletter-subtitle {
-      font-size: 15px;
+      font-size: 16px;
       color: #666;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       line-height: 1.5;
     }
 
@@ -307,37 +438,40 @@
     }
 
     .newsletter input[type="email"] {
-      padding: 12px 16px;
+      padding: 14px 16px;
       width: 100%;
       border-radius: 4px;
       border: 1px solid #ddd;
-      font-size: 14px;
+      font-size: 16px;
       transition: all 0.2s ease;
       background: white;
+      cursor: none;
     }
 
     .newsletter input[type="email"]:focus {
       outline: none;
       border-color: #28a745;
       box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+      transform: translateY(-2px);
     }
 
     .newsletter button {
-      padding: 12px 24px;
+      padding: 14px 24px;
       border-radius: 4px;
       background-color: #28a745;
       color: white;
       border: 2px solid #218838;
-      cursor: pointer;
-      font-size: 14px;
+      cursor: none;
+      font-size: 16px;
       font-weight: 500;
       transition: all 0.2s ease;
-      min-width: 100px;
+      min-width: 120px;
     }
 
     .newsletter button:hover {
       background-color: #218838;
       border-color: #1e7e34;
+      transform: translateY(-2px);
     }
 
     .newsletter-note {
@@ -349,7 +483,7 @@
 
     /* About Us Section */
     .about-us {
-      padding: 70px 20px;
+      padding: 100px 20px;
       background-color: #f9f9f9;
       text-align: center;
     }
@@ -370,10 +504,16 @@
       flex: 1;
       min-width: 300px;
       background: white;
-      padding: 30px;
+      padding: 40px 30px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .about-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
     .team-members {
@@ -392,6 +532,11 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .team-member:hover {
+      transform: scale(1.1);
     }
 
     .team-icon {
@@ -400,8 +545,9 @@
 
     /* Contact Us Section */
     .contact-us {
-      padding: 70px 20px;
+      padding: 100px 20px;
       text-align: center;
+      background-color: white;
     }
 
     .contact-container {
@@ -420,65 +566,99 @@
       flex: 1;
       min-width: 300px;
       background: white;
-      padding: 30px;
+      padding: 40px 30px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .contact-form:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
     .contact-info {
       flex: 1;
       min-width: 300px;
       background: white;
-      padding: 30px;
+      padding: 40px 30px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
       height: 100%;
       text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .contact-info:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
     .contact-form input,
     .contact-form textarea {
       width: 100%;
-      padding: 10px;
+      padding: 12px 16px;
       border: 1px solid #ddd;
       border-radius: 4px;
       margin-bottom: 20px;
+      transition: all 0.3s;
+      cursor: none;
+      font-family: Arial, sans-serif;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+      transform: translateY(-2px);
     }
 
     .contact-form textarea {
-      min-height: 100px;
+      min-height: 120px;
+      resize: vertical;
     }
 
     .contact-form button {
       background-color: #28a745;
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 30px;
       border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
+      cursor: none;
+      transition: background-color 0.3s, transform 0.3s;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .contact-form button:hover {
       background-color: #218838;
+      transform: translateY(-2px);
     }
 
     .social-links {
       display: flex;
       gap: 15px;
       justify-content: center;
+      margin-top: 20px;
     }
 
     .social-links a {
       color: #333;
       font-size: 24px;
+      transition: all 0.3s;
+    }
+
+    .social-links a:hover {
+      color: #28a745;
+      transform: translateY(-3px);
     }
 
     /* Divider Line */
     .section-divider {
       height: 1px;
-      background-color: #000;
+      background: linear-gradient(to right, transparent, #ddd, transparent);
       margin: 0;
       border: none;
     }
@@ -486,9 +666,9 @@
     /* Footer Section */
     .footer {
       text-align: center;
-      padding: 40px 20px;
-      background-color: #fff;
-      color: #000;
+      padding: 60px 20px;
+      background-color: #1a1a1a;
+      color: white;
     }
 
     .footer-content {
@@ -499,7 +679,8 @@
     .footer-logo {
       font-weight: bold;
       margin-bottom: 20px;
-      font-size: 20px;
+      font-size: 24px;
+      color: white;
     }
 
     .social-icons {
@@ -510,19 +691,19 @@
     }
 
     .social-icon {
-      color: #000;
+      color: white;
       font-size: 28px;
       transition: all 0.3s ease;
     }
 
     .social-icon:hover {
       color: #28a745;
-      transform: translateY(-3px);
+      transform: translateY(-5px);
     }
 
     .copyright {
-      font-size: 13px;
-      color: #666;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
       margin-top: 10px;
     }
 
@@ -530,44 +711,61 @@
     .modal {
       display: none;
       position: fixed;
-      z-index: 100;
+      z-index: 2000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
     }
 
     .modal-content {
       background-color: white;
       margin: 15% auto;
-      padding: 30px;
-      border-radius: 8px;
+      padding: 40px;
+      border-radius: 12px;
       width: 80%;
       max-width: 400px;
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
+      animation: modalAppear 0.4s ease-out;
+      cursor: none;
+    }
+
+    @keyframes modalAppear {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .close-btn {
       position: absolute;
-      top: 10px;
-      right: 15px;
+      top: 15px;
+      right: 20px;
       font-size: 24px;
       font-weight: bold;
-      cursor: pointer;
+      cursor: none;
       color: #555;
+      transition: all 0.3s;
     }
 
     .close-btn:hover {
       color: #000;
+      transform: rotate(90deg);
     }
 
     .modal-icon {
-      font-size: 50px;
+      font-size: 60px;
       color: #28a745;
       margin-bottom: 20px;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-10px);}
+      60% {transform: translateY(-5px);}
     }
 
     .modal h3 {
@@ -586,368 +784,405 @@
     }
 	
 	.daily-quotes-btn {
-  position: absolute;
-  top: 21px;
-  left: 1215px;
-  background-color: #ff5722;
-  color: white;
-  padding-left: 70px;
-  font-size: 10px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  text-decoration: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease;
-  z-index: 999;
-}
-
-.daily-quotes-btn:hover {
-  background-color: #e64a19;
-}
-
-.qt{
-padding-left:n40px;
-}
-.my-orders-btn{
-padding-left:70px;
-}
-
-.my-orders-btn{
-padding-left:200px;
-}
-
-
-  /* MOBILE-ONLY OVERRIDES: desktop above unchanged */
-  @media (max-width: 768px) {
-      /* Hide desktop nav area on mobile */
-      .topbar-nav { display: none !important; }
-
-      /* Hide desktop-only floating buttons on mobile (menu will have equivalents) */
-      .daily-quotes-btn,
-      .my-orders-btn,
-      .admin-btn { display: none !important; }
-
-      /* Ensure topbar uses relative positioning on mobile so the pseudo-header can be centered */
-      .topbar {
-        position: relative;
-        padding-left: 56px; /* leave room for mobile hamburger if present */
-        padding-right: 16px;
-        min-height: 56px;
-        align-items: center;
-      }
-
-      /* Mobile top header text: Menz Tees Hub (only on small screens) */
-      .topbar::before {
-        content: "Menz Tees Hub";
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        font-weight: 700;
-        font-size: 18px;
-        color: #000;
-        letter-spacing: 0.2px;
-        z-index: 2100;
-        white-space: nowrap;
-      }
-
-      /* Mobile hamburger (top-left) */
-      .hamburger {
-        display: flex;
-        position: fixed;
-        left: 12px;
-        top: 12px;
-        width: 44px;
-        height: 36px;
-        gap: 6px;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 2200;
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        background: transparent;
-        border: none;
-      }
-      .hamburger span {
-        display: block;
-        width: 28px;
-        height: 3px;
-        border-radius: 3px;
-        background: #000;
-        transition: transform 180ms ease, opacity 180ms ease;
-      }
-      .hamburger.active span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
-      .hamburger.active span:nth-child(2){ opacity: 0; transform: translateX(-10px); }
-      .hamburger.active span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
-
-      /* Mobile slide-out menu (left) */
-      .mobile-menu {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: -280px;
-        width: 260px;
-        height: 100%;
-        background: #fff;
-        box-shadow: 4px 0 20px rgba(0,0,0,0.2);
-        z-index: 2050;
-        flex-direction: column;
-        padding-top: 70px;
-        transition: left 220ms ease;
-        -webkit-overflow-scrolling: touch;
-      }
-      .mobile-menu.active { left: 0; }
-
-      .mobile-menu a {
-        display: block;
-        padding: 14px 18px;
-        text-decoration: none;
-        color: #111;
-        font-size: 16px;
-        border-bottom: 1px solid #f0f0f0;
-      }
-      .mobile-menu a:hover { background: #f8f8f8; color: #28a745; }
-
-      /* overlay behind mobile menu */
-      .mobile-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.45);
-        z-index: 2040;
-      }
-      .mobile-overlay.active { display: block; }
-
-      /* push hero height a bit down for mobile */
-      .hero { height: calc(100vh - 56px); }
-
-      /* Adjust some paddings on mobile for better fit */
-      .hero-content { padding-top: 90px; padding-left: 16px; }
-      .hero h1 { font-size: 28px; margin-bottom: 18px; }
-      .hero-btn-container { padding-left: 0; padding-bottom: 30px; }
-
-      .feature-box { max-width: 100%; padding: 20px; min-height: auto; }
-      .product-card { width: 100%; padding: 16px; }
-
-      .newsletter, .about-us, .contact-us { padding: 40px 16px; }
-
-      /* ABOUT US: stack boxes and align text for mobile */
-      .about-container { max-width: 100%; padding: 0 12px; }
-      .about-row { flex-direction: column; gap: 18px; align-items: stretch; }
-      .about-box { padding: 18px; text-align: left; }
-      .about-box h3 { text-align: center; margin-bottom: 10px; font-size: 18px; }
-      .about-box p { text-align: left; line-height: 1.5; font-size: 15px; }
-
-      /* Mission & Values inside about-box list formatting */
-      .about-box ul { padding-left: 18px; text-align: left; color: #555; line-height: 1.6; }
-      .about-box ul li { margin-bottom: 8px; }
-
-      .modal-content { margin: 20% auto; width: 92%; max-width: 360px; }
-
-      /* Improve readability of small text elements */
-      .topbar button, .topbar a { font-size: 14px; padding: 6px 8px; }
+      background-color: #ff5722;
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 40px;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease, transform 0.3s;
+      cursor: none;
     }
+
+    .daily-quotes-btn:hover {
+      background-color: #e64a19;
+      transform: translateY(-2px);
+    }
+
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: none;
+      z-index: 100;
+      transition: all 0.3s;
+      display: none;
+    }
+
+    .fab:hover {
+      background-color: #218838;
+      transform: scale(1.1);
+    }
+
+    .fab.active {
+      display: flex;
+    }
+
+  /* MOBILE-ONLY OVERRIDES */
+  @media (max-width: 768px) {
+    body {
+      cursor: auto;
+    }
+    
+    .cursor-dot, .cursor-outline {
+      display: none;
+    }
+
+    /* Hide desktop nav area on mobile */
+    .topbar-nav { display: none !important; }
+
+    /* Hide desktop-only floating buttons on mobile (menu will have equivalents) */
+    .daily-quotes-btn,
+    .my-orders-btn,
+    .admin-btn { display: none !important; }
+
+    /* Ensure topbar uses relative positioning on mobile so the pseudo-header can be centered */
+    .topbar {
+      position: relative;
+      padding-left: 56px; /* leave room for mobile hamburger if present */
+      padding-right: 16px;
+      min-height: 56px;
+      align-items: center;
+    }
+
+    /* Mobile top header text: Menz Tees Hub (only on small screens) */
+    .topbar::before {
+      content: "Menz Tees Hub";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 18px;
+      color: #000;
+      letter-spacing: 0.2px;
+      z-index: 2100;
+      white-space: nowrap;
+    }
+
+    /* Mobile hamburger (top-left) */
+    .hamburger {
+      display: flex;
+      position: fixed;
+      left: 12px;
+      top: 12px;
+      width: 44px;
+      height: 36px;
+      gap: 6px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2200;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      background: transparent;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 28px;
+      height: 3px;
+      border-radius: 3px;
+      background: #000;
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+    .hamburger.active span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
+    .hamburger.active span:nth-child(2){ opacity: 0; transform: translateX(-10px); }
+    .hamburger.active span:nth-child(3){ transform: translateY(-8px) rotate(-45deg); }
+
+    /* Mobile slide-out menu (left) */
+    .mobile-menu {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 260px;
+      height: 100%;
+      background: #fff;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+      z-index: 2050;
+      flex-direction: column;
+      padding-top: 70px;
+      transition: left 220ms ease;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-menu.active { left: 0; }
+
+    .mobile-menu a {
+      display: block;
+      padding: 14px 18px;
+      text-decoration: none;
+      color: #111;
+      font-size: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .mobile-menu a:hover { background: #f8f8f8; color: #28a745; transform: translateX(5px); }
+
+    /* overlay behind mobile menu */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.45);
+      z-index: 2040;
+      transition: all 0.3s;
+    }
+    .mobile-overlay.active { display: block; }
+
+    /* push hero height a bit down for mobile */
+    .hero { height: calc(100vh - 56px); }
+
+    /* Adjust some paddings on mobile for better fit */
+    .hero-content { padding-top: 90px; padding-left: 20px; padding-right: 20px; }
+    .hero h1 { font-size: 32px; margin-bottom: 18px; }
+    .hero-btn-container { padding-left: 0; padding-bottom: 30px; }
+
+    .feature-box { max-width: 100%; padding: 30px 20px; min-height: auto; }
+    .product-card { width: 100%; padding: 20px; }
+
+    .newsletter, .about-us, .contact-us { padding: 60px 16px; }
+
+    .section-title { font-size: 28px; }
+
+    /* ABOUT US: stack boxes and align text for mobile */
+    .about-container { max-width: 100%; padding: 0 12px; }
+    .about-row { flex-direction: column; gap: 18px; align-items: stretch; }
+    .about-box { padding: 25px 20px; text-align: left; }
+    .about-box h3 { text-align: center; margin-bottom: 10px; font-size: 18px; }
+    .about-box p { text-align: left; line-height: 1.5; font-size: 15px; }
+
+    /* Mission & Values inside about-box list formatting */
+    .about-box ul { padding-left: 18px; text-align: left; color: #555; line-height: 1.6; }
+    .about-box ul li { margin-bottom: 8px; }
+
+    .modal-content { margin: 20% auto; width: 92%; max-width: 360px; }
+
+    /* Improve readability of small text elements */
+    .topbar button, .topbar a { font-size: 14px; padding: 6px 8px; }
+
+    .fab {
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+    }
+    
+    .form-group {
+      flex-direction: column;
+    }
+    
+    .newsletter button {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
 	
-	/* ===== Mobile Menu & Overlay Fix ===== */
-
-/* Default: Hide on desktop */
-.mobile-menu,
-.mobile-overlay {
-  display: none;
-}
-
-/* Show only on mobile screens */
-@media (max-width: 768px) {
-  .mobile-menu {
-    position: fixed;
-    top: 0;
-    left: -250px; /* hidden off-screen initially */
-    width: 250px;
-    height: 100%;
-    background: white;
-    padding-top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: left 0.3s ease;
-    z-index: 2000;
-  }
-
-  .mobile-menu a {
-    padding: 12px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    color: black;
-    display: block;
-  }
-
-  .mobile-menu a:hover {
-    background: #333;
-  }
-
+  /* Mobile Menu & Overlay Fix */
+  .mobile-menu,
   .mobile-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: none; /* shown only when active */
-    z-index: 1500;
+    display: none;
   }
 
-  /* When menu is active */
-  .mobile-menu.active {
-    left: 0; /* slide in */
-  }
-  .mobile-overlay.active {
-    display: block;
-  }
-}
+  @media (max-width: 768px) {
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: white;
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: left 0.3s ease;
+      z-index: 2000;
+    }
 
-.product-card:active img,
-.product-card:focus img {
-  transform: scale(1.05);
-}
+    .mobile-menu a {
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 18px;
+      color: black;
+      display: block;
+    }
 
-img.alt {
-  content: url("second-image.jpg");
-}
+    .mobile-menu a:hover {
+      background: #f0f0f0;
+    }
 
-/* =========================
-   YOUR MOBILE-ONLY OVERRIDES (exactly what you asked)
-   - remove hero image on mobile
-   - perfectly fit and center hero text on mobile
-   - hamburger hides on scroll (mobile-only) — requires the small JS provided below
-   NOTE: these rules are mobile-only and will NOT change desktop layout.
-   ========================= */
-@media (max-width: 768px) {
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1500;
+    }
 
-  /* hide the hero background image on mobile */
-  .hero img {
-    display: none !important;
-  }
-
-  /* make hero a clean block with centered text and comfortable padding */
-  .hero {
-    background: #ffffff;          /* plain background on mobile */
-    color: #111;
-    height: auto !important;
-    padding: 48px 18px;
-    text-align: center;
-  }
-
-  /* center and constrain hero content */
-  .hero-content {
-    z-index: 2;
-    position: relative;
-    margin: 0 auto;
-    max-width: 720px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    gap: 12px;
+    .mobile-menu.active {
+      left: 0;
+    }
+    .mobile-overlay.active {
+      display: block;
+    }
   }
 
-  /* fit and scale heading & subtitle for mobile */
-  .hero h1 {
-    color: #111 !important;
-    font-size: 26px !important;
-    line-height: 1.18 !important;
-    margin: 0;
-    text-shadow: none !important;
-    font-weight: 700;
-  }
+  /* Mobile-specific hero adjustments */
+  @media (max-width: 768px) {
+    /* hide the hero background image on mobile */
+    .hero img {
+      display: none !important;
+    }
 
-  .hero p,
-  .hero .subtitle {
-    color: #333 !important;
-    font-size: 15px;
-    line-height: 1.5;
-    margin: 6px 0 0 0;
-    max-width: 94%;
-  }
+    /* make hero a clean block with centered text and comfortable padding */
+    .hero {
+      background: #ffffff;
+      color: #111;
+      height: auto !important;
+      padding: 48px 18px;
+      text-align: center;
+    }
 
-  /* make hero CTA buttons nice and centered on mobile */
-  .hero-btn-container {
-    padding-left: 0 !important;
-    margin-top: 14px !important;
-    align-self: center !important;
-    padding-bottom: 0 !important;
-  }
+    /* center and constrain hero content */
+    .hero-content {
+      z-index: 2;
+      position: relative;
+      margin: 0 auto;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      gap: 12px;
+    }
 
-  .hero-btn {
-    display: inline-block;
-    text-align: center;
-    font-size: 15px !important;
-    padding: 10px 26px !important;
-    border-radius: 8px !important;
-    border-width: 2px !important;
-    color: #fff !important;
-    background: linear-gradient(90deg,#28a745,#20c997);
-  }
-  .hero-btn:hover { transform: translateY(-2px); }
+    /* fit and scale heading & subtitle for mobile */
+    .hero h1 {
+      color: #111 !important;
+      font-size: 26px !important;
+      line-height: 1.18 !important;
+      margin: 0;
+      text-shadow: none !important;
+      font-weight: 700;
+    }
 
-  /* Hamburger: make it non-fixed so it scrolls away by default,
-     AND provide a 'hidden-on-scroll' class to completely hide it when user scrolls */
-  .hamburger {
-    position: absolute !important; /* not fixed */
-    left: 12px !important;
-    top: 12px !important;
-    width: 44px;
-    height: 36px;
-    gap: 6px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 2200;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    transition: opacity 180ms ease, transform 180ms ease;
-  }
-  .hamburger span { background: #111; }
+    .hero p,
+    .hero .subtitle {
+      color: #333 !important;
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 6px 0 0 0;
+      max-width: 94%;
+    }
 
-  /* class applied by JS when user scrolls (mobile only) */
-  .hamburger.hidden-on-scroll {
-    opacity: 0 !important;
-    transform: translateY(-10px) scale(0.98);
-    pointer-events: none;
-  }
+    /* make hero CTA buttons nice and centered on mobile */
+    .hero-btn-container {
+      padding-left: 0 !important;
+      margin-top: 14px !important;
+      align-self: center !important;
+      padding-bottom: 0 !important;
+    }
 
-  /* ensure mobile menus look clean with slight blur */
-  .mobile-menu {
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(4px);
-  }
-  .mobile-menu a { font-weight: 700; color: #111; }
+    .hero-btn {
+      display: inline-block;
+      text-align: center;
+      font-size: 15px !important;
+      padding: 10px 26px !important;
+      border-radius: 8px !important;
+      border-width: 2px !important;
+      color: #fff !important;
+      background: linear-gradient(90deg,#28a745,#20c997);
+      cursor: pointer;
+    }
+    .hero-btn:hover { transform: translateY(-2px); }
 
-  /* slightly larger touch targets for mobile topbar items (keeps desktop intact) */
-  .topbar button, .topbar a {
-    padding: 10px 12px !important;
-    font-size: 14px !important;
-  }
+    /* Hamburger adjustments */
+    .hamburger {
+      position: absolute !important;
+      left: 12px !important;
+      top: 12px !important;
+      width: 44px;
+      height: 36px;
+      gap: 6px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2200;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .hamburger span { background: #111; }
 
-  /* Small layout adjustments to keep everything tidy on small screens */
-  .feature-box { max-width: 100%; padding: 16px; }
-  .product-card { width: 100%; padding: 14px; }
-  .newsletter, .about-us, .contact-us { padding: 30px 16px; }
-  .about-container { max-width: 100%; padding: 0 12px; }
-  .about-row, .contact-row { flex-direction: column; gap: 18px; align-items: stretch; }
-  .modal-content { margin: 18% auto; width: 92%; max-width: 360px; }
-  .footer { padding: 24px 16px; }
-}
+    /* class applied by JS when user scrolls (mobile only) */
+    .hamburger.hidden-on-scroll {
+      opacity: 0 !important;
+      transform: translateY(-10px) scale(0.98);
+      pointer-events: none;
+    }
+
+    /* ensure mobile menus look clean with slight blur */
+    .mobile-menu {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(4px);
+    }
+    .mobile-menu a { font-weight: 700; color: #111; }
+
+    /* slightly larger touch targets for mobile topbar items (keeps desktop intact) */
+    .topbar button, .topbar a {
+      padding: 10px 12px !important;
+      font-size: 14px !important;
+      cursor: pointer;
+    }
+
+    /* Small layout adjustments to keep everything tidy on small screens */
+    .feature-box { max-width: 100%; padding: 16px; }
+    .product-card { width: 100%; padding: 14px; }
+    .newsletter, .about-us, .contact-us { padding: 30px 16px; }
+    .about-container { max-width: 100%; padding: 0 12px; }
+    .about-row, .contact-row { flex-direction: column; gap: 18px; align-items: stretch; }
+    .modal-content { margin: 18% auto; width: 92%; max-width: 360px; }
+    .footer { padding: 24px 16px; }
+  }
 </style>
-
-
 </head>
 <body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-outline" id="cursor-outline"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- Floating Action Button -->
+  <div class="fab" id="fab">
+    <i class="fas fa-arrow-up"></i>
+  </div>
 
   <!-- Mobile hamburger (hidden on desktop by default) -->
   <button class="hamburger" id="hamburger" aria-label="Open menu" type="button">
@@ -967,27 +1202,22 @@ img.alt {
   </div>
   <div class="mobile-overlay" id="mobileOverlay" tabindex="-1"></div>
 
-  <div class="topbar">
+  <div class="topbar" id="topbar">
     <div class="topbar-nav">
       <a href="">Home</a>
       <a href="products.html">Products</a>
       <a href="predictor.html">Fit Predictor</a>
     </div>
    
-      <!-- Add this inside your header/nav bar -->
-	  
-	  <a href="/quote.html" class="daily-quotes-btn">📝 Daily Quotes</a>
-    
-<div  class="my-orders-btn">	  
-<a href="check-orders.html" style="float: right; margin-left: 820px;">My Orders</a>
+    <div class="topbar-right">
+      <a href="/quote.html" class="daily-quotes-btn">📝 Daily Quotes</a>
+      <a href="check-orders.html" class="my-orders-btn">My Orders</a>
+      <a href="admin-login.html" class="admin-btn">Admin Login</a>
     </div>
-<div>
-	<a href="admin-login.html" class="admin-btn">Admin Login</a>
-</div>
   </div>
 
   <section class="hero">
-    <img src="./images/background11.jpg" alt="Hero Background">
+    <img src="./images/background1.jpg" alt="Hero Background">
     <div class="hero-content">
       <h1>Premium Quality<br>Sustainable T-Shirts</h1>
       <div class="hero-btn-container">
@@ -1000,7 +1230,7 @@ img.alt {
   </section>
 
   <section class="features">
-    <h2>Why Choose Us</h2>
+    <h2 class="section-title">Why Choose Us</h2>
     <div class="row">
       <!-- Organic Cotton -->
       <div class="feature-box">
@@ -1045,7 +1275,7 @@ img.alt {
   </section>
 
   <section id="bestsellers" class="bestsellers">
-    <h2>Our Bestsellers</h2>
+    <h2 class="section-title">Our Bestsellers</h2>
     <p>Discover our most loved and eco-conscious T-shirts</p>
     <div class="row">
       <!-- V-Neck Tees -->
@@ -1107,7 +1337,7 @@ img.alt {
   <!-- About Us Section -->
   <section class="about-us">
     <div class="about-container">
-      <h2>About Us</h2>
+      <h2 class="section-title">About Us</h2>
       
       <div class="about-row">
         <!-- Brand Story -->
@@ -1156,27 +1386,27 @@ img.alt {
   <!-- Contact Us Section -->
   <section class="contact-us">
     <div class="contact-container">
-      <h2>Contact Us</h2>
+      <h2 class="section-title">Contact Us</h2>
       
       <div class="contact-row">
         <!-- Contact Form -->
         <div class="contact-form">
           <h3 style="color: #28a745; margin-bottom: 20px;">Send Us a Message</h3>
           
-          <form>
+          <form id="contactForm">
             <div style="margin-bottom: 20px;">
               <label style="display: block; margin-bottom: 8px; color: #555;">Your Name</label>
-              <input type="text">
+              <input type="text" id="contactName" required>
             </div>
             
             <div style="margin-bottom: 20px;">
               <label style="display: block; margin-bottom: 8px; color: #555;">Email Address</label>
-              <input type="email">
+              <input type="email" id="contactEmail" required>
             </div>
             
             <div style="margin-bottom: 20px;">
               <label style="display: block; margin-bottom: 8px; color: #555;">Message</label>
-              <textarea></textarea>
+              <textarea id="contactMessage" required></textarea>
             </div>
             
             <button type="submit">Send Message</button>
@@ -1206,7 +1436,13 @@ img.alt {
           </div>
           
           <div>
-            
+            <h4 style="margin-bottom: 10px; color: #333;">Follow Us</h4>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
           </div>
         </div>
       </div>
@@ -1233,139 +1469,199 @@ img.alt {
         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
         <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
       </div>
-      <div class="copyright">© 2025 All Rights Reserved</div>
+      <div class="copyright">© 2025 All Rights Reserved | Made with ❤️ for Sustainable Fashion</div>
     </div>
   </footer>
 
   <script>
-  // Mobile menu toggle
-  (function() {
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileOverlay = document.getElementById('mobileOverlay');
+    // Custom cursor
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorOutline = document.getElementById('cursor-outline');
+    
+    document.addEventListener('mousemove', (e) => {
+      cursorDot.style.left = `${e.clientX}px`;
+      cursorDot.style.top = `${e.clientY}px`;
+      
+      cursorOutline.style.left = `${e.clientX}px`;
+      cursorOutline.style.top = `${e.clientY}px`;
+    });
+    
+    // Make cursor interactive with clickable elements
+    document.querySelectorAll('a, button, input, textarea').forEach(element => {
+      element.addEventListener('mouseenter', () => {
+        cursorDot.style.transform = 'scale(1.5)';
+        cursorOutline.style.transform = 'scale(1.5)';
+        cursorOutline.style.borderColor = '#ff5722';
+      });
+      
+      element.addEventListener('mouseleave', () => {
+        cursorDot.style.transform = 'scale(1)';
+        cursorOutline.style.transform = 'scale(1)';
+        cursorOutline.style.borderColor = '#28a745';
+      });
+    });
 
-    if (hamburger && mobileMenu && mobileOverlay) {
-      function openMenu() {
-        hamburger.classList.add('active');
-        mobileMenu.classList.add('active');
-        mobileOverlay.classList.add('active');
-        mobileMenu.setAttribute('aria-hidden', 'false');
+    // Scroll progress indicator
+    const scrollProgress = document.getElementById('scroll-progress');
+    
+    window.addEventListener('scroll', () => {
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (window.scrollY / windowHeight) * 100;
+      scrollProgress.style.width = `${scrolled}%`;
+    });
+
+    // Mobile menu toggle
+    (function() {
+      const hamburger = document.getElementById('hamburger');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+
+      if (hamburger && mobileMenu && mobileOverlay) {
+        function openMenu() {
+          hamburger.classList.add('active');
+          mobileMenu.classList.add('active');
+          mobileOverlay.classList.add('active');
+          mobileMenu.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        }
+        function closeMenu() {
+          hamburger.classList.remove('active');
+          mobileMenu.classList.remove('active');
+          mobileOverlay.classList.remove('active');
+          mobileMenu.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        }
+
+        hamburger.addEventListener('click', function(e) {
+          if (mobileMenu.classList.contains('active')) closeMenu();
+          else openMenu();
+        });
+
+        mobileOverlay.addEventListener('click', closeMenu);
+
+        // close when a mobile menu link is clicked
+        mobileMenu.querySelectorAll('a').forEach(function(a) {
+          a.addEventListener('click', closeMenu);
+        });
+
+        // close on ESC key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') closeMenu();
+        });
       }
-      function closeMenu() {
-        hamburger.classList.remove('active');
-        mobileMenu.classList.remove('active');
-        mobileOverlay.classList.remove('active');
-        mobileMenu.setAttribute('aria-hidden', 'true');
+    })();
+
+    // Sticky header on scroll
+    window.addEventListener('scroll', function() {
+      const topbar = document.getElementById('topbar');
+      if (window.scrollY > 50) {
+        topbar.classList.add('scrolled');
+      } else {
+        topbar.classList.remove('scrolled');
       }
+    });
 
-      hamburger.addEventListener('click', function(e) {
-        if (mobileMenu.classList.contains('active')) closeMenu();
-        else openMenu();
+    // Floating Action Button - Scroll to top
+    document.getElementById('fab').addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
+    });
 
-      mobileOverlay.addEventListener('click', closeMenu);
+    // Show/hide FAB based on scroll position
+    window.addEventListener('scroll', function() {
+      const fab = document.getElementById('fab');
+      if (window.scrollY > 300) {
+        fab.classList.add('active');
+      } else {
+        fab.classList.remove('active');
+      }
+    });
 
-      // close when a mobile menu link is clicked
-      mobileMenu.querySelectorAll('a').forEach(function(a) {
-        a.addEventListener('click', closeMenu);
-      });
-
-      // close on ESC key
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeMenu();
-      });
-    }
-  })();
-
-  // Newsletter form submission
-  document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
-    
-    if (!email.includes('@') || !email.includes('.')) {
-      alert('Please enter a valid email address');
-      return;
-    }
-    
-    try {
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email })
-      });
+    // Newsletter form submission
+    document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
       
-      const result = await response.json();
+      const email = document.getElementById('newsletterEmail').value.trim().toLowerCase();
       
-      // Update modal
-      const modal = document.getElementById('subscribeModal');
-      document.getElementById('modalTitle').textContent = 
-        result.status === 'success' ? 'Thank You!' : 'Already Subscribed';
-      document.getElementById('modalMessage').textContent = result.message;
-      document.querySelector('.modal-icon').textContent = 
-        result.status === 'success' ? '✓' : 'i';
-      document.querySelector('.modal-icon').style.color = 
-        result.status === 'success' ? '#28a745' : '#ffc107';
+      if (!email.includes('@') || !email.includes('.')) {
+        alert('Please enter a valid email address');
+        return;
+      }
       
-      modal.style.display = 'block';
-      this.reset();
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Subscription failed. Please try again.');
-    }
-  });
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Update modal
+        const modal = document.getElementById('subscribeModal');
+        document.getElementById('modalTitle').textContent = 'Thank You!';
+        document.getElementById('modalMessage').textContent = 'You\'ve been successfully added to our newsletter list.';
+        document.querySelector('.modal-icon').textContent = '✓';
+        document.querySelector('.modal-icon').style.color = '#28a745';
+        
+        modal.style.display = 'block';
+        this.reset();
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Subscription failed. Please try again.');
+      }
+    });
 
-  // Contact form submission
-  document.querySelector('.contact-form form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = {
-      name: this.querySelector('input[type="text"]').value,
-      email: this.querySelector('input[type="email"]').value,
-      message: this.querySelector('textarea').value
-    };
-    
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+    // Contact form submission
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
       
-      const result = await response.json();
-      alert(result.message);
-      this.reset();
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Message submission failed. Please try again.');
-    }
-  });
+      const formData = {
+        name: document.getElementById('contactName').value,
+        email: document.getElementById('contactEmail').value,
+        message: document.getElementById('contactMessage').value
+      };
+      
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        alert('Thank you for your message! We\'ll get back to you soon.');
+        this.reset();
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Message submission failed. Please try again.');
+      }
+    });
 
-  // Close modal
-  document.querySelector('.close-btn').addEventListener('click', function() {
-    document.getElementById('subscribeModal').style.display = 'none';
-  });
-  
-  window.addEventListener('click', function(e) {
-    if (e.target === document.getElementById('subscribeModal')) {
+    // Close modal
+    document.querySelector('.close-btn').addEventListener('click', function() {
       document.getElementById('subscribeModal').style.display = 'none';
-    }
-  });
-  
-  const products = document.querySelectorAll(".product-card img");
-products.forEach(img => {
-  img.addEventListener("click", () => {
-    img.classList.toggle("alt");
-  });
-});
+    });
+    
+    window.addEventListener('click', function(e) {
+      if (e.target === document.getElementById('subscribeModal')) {
+        document.getElementById('subscribeModal').style.display = 'none';
+      }
+    });
 
-  
-</script>
-
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>
