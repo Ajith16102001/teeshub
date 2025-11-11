@@ -3,122 +3,1048 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Success - Mens Tees Hub</title>
+  <title>Order Success | Mens Tees Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --primary-light: #4895ef;
+      --secondary: #7209b7;
+      --accent: #f72585;
+      --success: #4cc9f0;
+      --error: #e63946;
+      --dark: #1a1a2e;
+      --darker: #0f0f1a;
+      --light: #f8f9fa;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --border-radius: 16px;
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(247, 37, 133, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #16213e 100%);
+      color: var(--light);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
     }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+
+    /* Animated Background */
+    .bg-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 600px;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
     }
-    h2 { text-align: center; color: green; margin-bottom: 20px; }
-    .user-name, .shipping-address { font-size: 1.2em; margin-bottom: 15px; }
-    table {
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      opacity: 0.1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      width: 150px;
+      height: 150px;
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 10%;
+      animation-delay: 2s;
+    }
+
+    .shape-3 {
+      width: 100px;
+      height: 100px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Main Container */
+    .success-container {
       width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+      max-width: 400px;
+      height: 90vh;
+      max-height: 700px;
+      animation: fadeIn 0.6s ease-out;
     }
-    table, th, td { border: 1px solid #ddd; }
-    th, td { padding: 12px; text-align: center; }
-    th { background-color: #007bff; color: #fff; }
-    .total, .payment-method { font-size: 1.2em; margin-bottom: 10px; }
-    .btn-home {
-      display: block;
-      width: 200px;
-      margin: 0 auto;
-      padding: 12px;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card Design */
+    .success-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      transition: var(--transition);
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .success-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .success-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+
+    /* Header Section */
+    .success-header {
       text-align: center;
-      background: #007bff;
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: 0.3s;
+      padding: 25px 20px 20px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+      flex-shrink: 0;
     }
-    .btn-home:hover { background: #0056b3; }
-    .empty { text-align: center; color: red; margin-top: 20px; }
+
+    .success-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      box-shadow: 0 8px 32px rgba(67, 97, 238, 0.3);
+      position: relative;
+      z-index: 2;
+      transition: var(--transition);
+    }
+
+    .success-icon:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 40px rgba(67, 97, 238, 0.4);
+    }
+
+    .success-icon i {
+      font-size: 24px;
+      color: white;
+    }
+
+    .success-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 2;
+    }
+
+    .success-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      font-weight: 400;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Body Section */
+    .success-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .user-greeting {
+      text-align: center;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: rgba(76, 201, 240, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(76, 201, 240, 0.2);
+      animation: slideUp 0.5s ease-out;
+      flex-shrink: 0;
+    }
+
+    @keyframes slideUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user-greeting h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 4px;
+    }
+
+    .user-greeting p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .order-details {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+      animation: slideUp 0.5s ease-out 0.1s both;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .detail-row:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .detail-row:last-child {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--success);
+      padding-top: 10px;
+    }
+
+    .delivery-progress {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+      animation: slideUp 0.5s ease-out 0.2s both;
+    }
+
+    .delivery-progress h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+
+    .progress-bar {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      height: 2px;
+      background: var(--primary);
+      z-index: 2;
+      width: 33%;
+      transition: width 0.5s ease;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      margin-bottom: 5px;
+      transition: var(--transition);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .step.active .step-icon {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+    }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .step.active .step-label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .delivery-progress p {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .order-items-container {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.5s ease-out 0.3s both;
+    }
+
+    .order-items-header {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .order-items {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 100px;
+      margin-bottom: 15px;
+    }
+
+    .order-items::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .order-items::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+    }
+
+    .order-items::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: var(--transition);
+    }
+
+    .order-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .item-image {
+      width: 35px;
+      height: 35px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-name {
+      font-weight: 600;
+      font-size: 12px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .item-meta {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+      display: flex;
+      gap: 8px;
+    }
+
+    .item-price {
+      font-weight: 700;
+      color: var(--success);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+      flex-shrink: 0;
+      animation: slideUp 0.5s ease-out 0.4s both;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -5px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: rgba(255, 255, 255, 0.6);
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .empty-state p {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .empty-state .action-buttons {
+      margin-top: 15px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+        align-items: center;
+      }
+
+      .success-container {
+        max-width: 100%;
+        height: 95vh;
+        max-height: 667px;
+      }
+
+      .success-card {
+        border-radius: 12px;
+      }
+
+      .success-header {
+        padding: 20px 15px 15px;
+      }
+
+      .success-body {
+        padding: 15px;
+      }
+
+      .success-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .success-icon i {
+        font-size: 20px;
+      }
+
+      .success-header h1 {
+        font-size: 20px;
+      }
+
+      .success-header p {
+        font-size: 13px;
+      }
+
+      .user-greeting {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .user-greeting h2 {
+        font-size: 15px;
+      }
+
+      .order-details,
+      .delivery-progress {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .detail-row {
+        padding: 6px 0;
+        font-size: 12px;
+      }
+
+      .detail-row:last-child {
+        font-size: 13px;
+      }
+
+      .order-items {
+        max-height: 80px;
+      }
+
+      .order-item {
+        padding: 6px;
+        gap: 8px;
+      }
+
+      .item-image {
+        width: 30px;
+        height: 30px;
+      }
+
+      .item-name {
+        font-size: 11px;
+      }
+
+      .item-meta {
+        font-size: 9px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 10px 14px;
+        font-size: 12px;
+      }
+
+      /* Smaller shapes for mobile */
+      .shape-1 {
+        width: 100px;
+        height: 100px;
+      }
+
+      .shape-2 {
+        width: 80px;
+        height: 80px;
+      }
+
+      .shape-3 {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    /* Confetti animation */
+    @keyframes confetti {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      opacity: 0;
+      animation: confetti 3s ease-in-out forwards;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>✅ Order Placed Successfully!</h2>
-    <p class="user-name" id="username"></p>
-    <p class="shipping-address" id="shippingAddress"></p>
-
-    <table id="orderTable">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Size</th>
-          <th>Quantity</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <p class="total" id="totalAmount"></p>
-    <p class="payment-method" id="paymentMethod"></p>
-    <a href="index.html" class="btn-home">Back to Home</a>
-    <p class="empty" id="emptyMsg"></p>
+  <!-- Animated Background -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
   </div>
 
-  <script>
-    const username = sessionStorage.getItem("username") || "Guest";
-    const orderItems = JSON.parse(sessionStorage.getItem("orderItems") || "[]");
-    const total = sessionStorage.getItem("totalPrice") || "0.00";
-    const paymentMethod = sessionStorage.getItem("paymentMethod") || "N/A";
-    const shippingAddress = sessionStorage.getItem("shippingAddress") || "N/A";
-    const orderSuccess = sessionStorage.getItem("orderSuccess");
+  <div class="success-container">
+    <div class="success-card">
+      <div class="success-header">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase</p>
+      </div>
 
-    const usernameEl = document.getElementById("username");
-    const shippingEl = document.getElementById("shippingAddress");
-    const tableBody = document.querySelector("#orderTable tbody");
-    const totalEl = document.getElementById("totalAmount");
-    const paymentEl = document.getElementById("paymentMethod");
-    const emptyMsg = document.getElementById("emptyMsg");
+      <div class="success-body">
+        <div class="user-greeting" id="userGreeting">
+          <!-- Will be populated by JavaScript -->
+        </div>
 
-    if (!orderSuccess || orderItems.length === 0) {
-      emptyMsg.innerText = "No order details available.";
-      document.getElementById("orderTable").style.display = "none";
-      totalEl.style.display = "none";
-      paymentEl.style.display = "none";
-      shippingEl.style.display = "none";
-    } else {
-      usernameEl.innerText = `Hello, ${username}! Here are your order details:`;
-      shippingEl.innerText = `Shipping Address: ${shippingAddress}`;
+        <div class="content-area">
+          <div class="order-details" id="orderDetails">
+            <div class="detail-row">
+              <span>Order Number</span>
+              <span id="orderNumber">-</span>
+            </div>
+            <div class="detail-row">
+              <span>Order Date</span>
+              <span id="orderDate">-</span>
+            </div>
+            <div class="detail-row">
+              <span>Payment Method</span>
+              <span id="paymentMethod">-</span>
+            </div>
+            <div class="detail-row">
+              <span>Shipping Address</span>
+              <span id="shippingAddress">-</span>
+            </div>
+            <div class="detail-row">
+              <span><strong>Total Amount</strong></span>
+              <span><strong id="totalAmount">-</strong></span>
+            </div>
+          </div>
 
-      orderItems.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${item.title}</td>
-          <td>${item.selectedSize || 'M'}</td>
-          <td>${item.quantity || 1}</td>
-          <td>₹${(item.price * (item.quantity || 1)).toFixed(2)}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
+          <div class="delivery-progress" id="deliveryProgress">
+            <h3>
+              <i class="fas fa-truck"></i>
+              Delivery Progress
+            </h3>
+            <div class="progress-steps">
+              <div class="progress-bar"></div>
+              <div class="step active">
+                <div class="step-icon">1</div>
+                <div class="step-label">Ordered</div>
+              </div>
+              <div class="step">
+                <div class="step-icon">2</div>
+                <div class="step-label">Shipped</div>
+              </div>
+              <div class="step">
+                <div class="step-icon">3</div>
+                <div class="step-label">Delivered</div>
+              </div>
+            </div>
+            <p>
+              <i class="fas fa-clock"></i>
+              Estimated delivery: 3-5 business days
+            </p>
+          </div>
 
-      totalEl.innerText = `Total Amount: ₹${parseFloat(total).toFixed(2)}`;
-      paymentEl.innerText = `Payment Method: ${paymentMethod}`;
+          <div class="order-items-container" id="orderItemsContainer">
+            <div class="order-items-header">
+              <i class="fas fa-shopping-bag"></i>
+              Order Items
+            </div>
+            <div class="order-items" id="orderItems">
+              <!-- Will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons" id="actionButtons">
+          <a href="products.html" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i>
+            Continue Shopping
+          </a>
+          <a href="index.html" class="btn btn-secondary">
+            <i class="fas fa-home"></i>
+            Back to Home
+          </a>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <i class="fas fa-inbox"></i>
+          <h3>No Recent Orders Found</h3>
+          <p>Please login and place an order to see your order details.</p>
+          <div class="action-buttons">
+            <a href="login.html" class="btn btn-primary">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
+            </a>
+            <a href="products.html" class="btn btn-secondary">
+              <i class="fas fa-shopping-bag"></i>
+              Shop Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+    // Function to get order details from sessionStorage
+    function getOrderDetails() {
+      // Get shipping details from sessionStorage
+      let shippingDetails = {};
+      try {
+        const shippingData = sessionStorage.getItem("shippingDetails");
+        if (shippingData) {
+          shippingDetails = JSON.parse(shippingData);
+        }
+      } catch (error) {
+        console.error("Error parsing shipping details:", error);
+      }
+
+      // Get username - try multiple possible keys
+      const username = sessionStorage.getItem("username") || 
+                      sessionStorage.getItem("userName") || 
+                      shippingDetails.name || 
+                      "Guest";
+
+      // Format shipping address
+      let shippingAddress = "Address to be confirmed for Cash on Delivery";
+      if (shippingDetails.address && shippingDetails.name) {
+        shippingAddress = `${shippingDetails.name}, ${shippingDetails.address}`;
+        if (shippingDetails.phone) {
+          shippingAddress += `, Phone: ${shippingDetails.phone}`;
+        }
+      }
+
+      return {
+        username: username,
+        orderItems: JSON.parse(sessionStorage.getItem("orderItems") || "[]"),
+        total: sessionStorage.getItem("totalPrice") || "0.00",
+        paymentMethod: sessionStorage.getItem("paymentMethod") || "Cash on Delivery",
+        shippingAddress: shippingAddress,
+        orderSuccess: sessionStorage.getItem("orderSuccess"),
+        orderId: sessionStorage.getItem("orderId") || "N/A",
+        orderNumber: sessionStorage.getItem("orderNumber") || "N/A",
+        shippingDetails: shippingDetails
+      };
     }
 
-    // Clear sessionStorage for order after showing success
-    sessionStorage.removeItem("cartItems");
-    sessionStorage.removeItem("orderItems");
-    sessionStorage.removeItem("orderSuccess");
-    sessionStorage.removeItem("totalPrice");
-    sessionStorage.removeItem("paymentMethod");
-    sessionStorage.removeItem("shippingAddress");
+    // Function to check if we have valid order data
+    function hasValidOrderData(orderData) {
+      // Check if user is logged in
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        console.log("User not logged in");
+        return false;
+      }
+
+      // Check if we have a recent successful order
+      const orderTimestamp = sessionStorage.getItem("orderTimestamp");
+      if (orderTimestamp) {
+        const orderTime = parseInt(orderTimestamp);
+        const currentTime = Date.now();
+        const timeDiff = currentTime - orderTime;
+        
+        // If order is older than 30 minutes, consider it expired
+        if (timeDiff > 30 * 60 * 1000) {
+          console.log("Order data expired");
+          clearOrderData();
+          return false;
+        }
+      }
+
+      return orderData.orderSuccess === "true" && 
+             orderData.orderItems && 
+             orderData.orderItems.length > 0;
+    }
+
+    // Function to display order details
+    function displayOrderDetails(orderData) {
+      const orderDate = new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // Update user greeting - use the actual username
+      document.getElementById('userGreeting').innerHTML = `
+        <h2>Hello, ${escapeHtml(orderData.username)}! 🎉</h2>
+        <p>Your order has been successfully placed</p>
+      `;
+
+      // Update order details
+      document.getElementById('orderNumber').textContent = orderData.orderNumber;
+      document.getElementById('orderDate').textContent = orderDate;
+      document.getElementById('paymentMethod').textContent = orderData.paymentMethod;
+      document.getElementById('shippingAddress').textContent = orderData.shippingAddress;
+      document.getElementById('totalAmount').textContent = `₹${parseFloat(orderData.total).toFixed(2)}`;
+
+      // Render order items
+      const orderItemsContainer = document.getElementById('orderItems');
+      orderItemsContainer.innerHTML = orderData.orderItems.map(item => `
+        <div class="order-item">
+          <img src="${item.image}" alt="${item.title}" class="item-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0MFY0MEgyMFYyMFoiIGZpbGw9IiNEQUUyRjYiLz4KPHBhdGggZD0iTTI2IDI2VjM0SDM0VjI2SDI2WiIgZmlsbD0iIzEwYjk4MSIvPgo8L3N2Zz4K'">
+          <div class="item-info">
+            <div class="item-name">${escapeHtml(item.title)}</div>
+            <div class="item-meta">
+              <span>Size: ${item.selectedSize || 'M'}</span>
+              <span>Qty: ${item.quantity || 1}</span>
+            </div>
+          </div>
+          <div class="item-price">₹${(item.price * (item.quantity || 1)).toFixed(2)}</div>
+        </div>
+      `).join('');
+
+      // Show order sections and hide empty state
+      document.getElementById('orderDetails').style.display = 'block';
+      document.getElementById('deliveryProgress').style.display = 'block';
+      document.getElementById('orderItemsContainer').style.display = 'flex';
+      document.getElementById('actionButtons').style.display = 'flex';
+      document.getElementById('emptyState').style.display = 'none';
+
+      console.log('Order details displayed successfully');
+      console.log('Username:', orderData.username);
+      console.log('Shipping address:', orderData.shippingAddress);
+    }
+
+    // Function to show empty state
+    function showEmptyState() {
+      document.getElementById('orderDetails').style.display = 'none';
+      document.getElementById('deliveryProgress').style.display = 'none';
+      document.getElementById('orderItemsContainer').style.display = 'none';
+      document.getElementById('actionButtons').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'flex';
+      
+      console.log('Showing empty state - no order data found');
+    }
+
+    // Function to clear order data
+    function clearOrderData() {
+      const keysToRemove = [
+        'orderItems',
+        'orderSuccess', 
+        'totalPrice',
+        'paymentMethod',
+        'orderId',
+        'orderNumber',
+        'hasShownConfetti',
+        'orderTimestamp'
+      ];
+      
+      keysToRemove.forEach(key => sessionStorage.removeItem(key));
+      console.log('Order data cleared');
+    }
+
+    // Function to create confetti effect (only for new orders)
+    function createConfetti() {
+      // Only create confetti if this is a new order (check a flag)
+      const hasShownConfetti = sessionStorage.getItem('hasShownConfetti');
+      
+      if (!hasShownConfetti) {
+        const colors = ['#4361ee', '#7209b7', '#4895ef', '#f72585', '#4cc9f0'];
+        for (let i = 0; i < 30; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 2 + 's';
+          document.body.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 3000);
+        }
+        // Set flag to prevent confetti on refresh
+        sessionStorage.setItem('hasShownConfetti', 'true');
+      }
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Main initialization function
+    function initializeSuccessPage() {
+      console.log('Initializing success page...');
+      
+      // Check if user is logged in
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        console.log('User not logged in, showing empty state');
+        showEmptyState();
+        return;
+      }
+
+      // Get order data
+      const orderData = getOrderDetails();
+      console.log('Order data found:', orderData);
+
+      // Check if we have valid order data
+      if (hasValidOrderData(orderData)) {
+        console.log('Valid order data found, displaying order details');
+        displayOrderDetails(orderData);
+        createConfetti();
+      } else {
+        console.log('No valid order data found, showing empty state');
+        showEmptyState();
+      }
+    }
+
+    // Initialize the page when DOM is loaded
+    window.addEventListener('DOMContentLoaded', initializeSuccessPage);
+
+    // Clear order data when user navigates away from the site
+    window.addEventListener('beforeunload', function() {
+      // Keep order data for 30 minutes only
+      const orderTimestamp = sessionStorage.getItem("orderTimestamp");
+      if (orderTimestamp) {
+        const orderTime = parseInt(orderTimestamp);
+        const currentTime = Date.now();
+        const timeDiff = currentTime - orderTime;
+        
+        // If order is older than 30 minutes, clear it
+        if (timeDiff > 30 * 60 * 1000) {
+          clearOrderData();
+        }
+      }
+    });
   </script>
 </body>
 </html>
