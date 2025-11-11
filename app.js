@@ -524,47 +524,67 @@ app.get('/api/products', async (req, res) => {
 
 
 app.post('/api/checkout', authenticateToken, async (req, res) => {
-  const { cart, total, paymentMethod } = req.body; // removed address from req.body
+  console.log('🎯 CHECKOUT ENDPOINT CALLED');
+  
+  const { cart, total, paymentMethod, address } = req.body;
 
-  if (!cart || cart.length === 0 || !total || !paymentMethod) {
-    return res.status(400).json({ success: false, error: "Missing checkout information" });
+  // Basic validation
+  if (!cart || !Array.isArray(cart) || cart.length === 0) {
+    return res.status(400).json({ success: false, error: "Cart is empty" });
   }
 
+  const connection = await pool.getConnection();
+  
   try {
-    // Fetch user address from database
-    const [userRows] = await pool.query('SELECT name, address FROM users WHERE id = ?', [req.user.id]);
-    const userAddress = userRows[0]?.address || 'No address found';
+    await connection.beginTransaction();
+    console.log('✅ Transaction started');
 
-    const orderNumber = 'ORD-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+    // Check if user exists (simpler query)
+    const [users] = await connection.query(
+      'SELECT id, name FROM users WHERE id = ?', 
+      [req.user.id]
+    );
+    
+    if (users.length === 0) {
+      await connection.rollback();
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
 
-    const [orderResult] = await pool.query(
+    const user = users[0];
+    const orderNumber = 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+
+    console.log('📦 Creating order:', orderNumber);
+
+    // Insert order (simplified - remove billing_address if it causes issues)
+    const [orderResult] = await connection.query(
       `INSERT INTO orders 
-        (user_id, order_number, total_amount, status, shipping_address, billing_address, payment_method, payment_status, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        (user_id, order_number, total_amount, status, shipping_address, payment_method, payment_status) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         req.user.id,
         orderNumber,
         total,
-        'processing',
-        userAddress,
-        userAddress,
+        'pending',
+        address || 'Cash on Delivery - Address to be provided',
         paymentMethod,
-        'paid'
+        'pending'
       ]
     );
 
     const orderId = orderResult.insertId;
+    console.log('✅ Order created with ID:', orderId);
 
+    // Insert order items
     for (const item of cart) {
-      await pool.query(
+      await connection.query(
         `INSERT INTO order_items 
-          (order_id, product_id, product_name, product_price, size, quantity, image_url, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+          (order_id, product_id, product_name, product_price, size, quantity, image_url)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           orderId,
           item.id || null,
-          item.title,
-          item.price,
+          item.title || 'Unknown Product',
+          item.price || 0,
           item.selectedSize || 'M',
           item.quantity || 1,
           item.image || ''
@@ -572,10 +592,31 @@ app.post('/api/checkout', authenticateToken, async (req, res) => {
       );
     }
 
-    res.json({ success: true, orderId });
+    await connection.commit();
+    console.log('🎉 Checkout completed successfully');
+
+    res.json({ 
+      success: true, 
+      orderId: orderId,
+      orderNumber: orderNumber
+    });
+
   } catch (err) {
-    console.error("❌ Checkout failed:", err);
-    res.status(500).json({ success: false, error: "Checkout failed" });
+    await connection.rollback();
+    console.error('❌ CHECKOUT ERROR:', err);
+    console.error('Error details:', {
+      code: err.code,
+      message: err.message,
+      sqlMessage: err.sqlMessage
+    });
+    
+    res.status(500).json({ 
+      success: false, 
+      error: "Checkout failed",
+      details: err.message 
+    });
+  } finally {
+    connection.release();
   }
 });
 
