@@ -1,827 +1,1277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mens Tees Hub - Premium T-Shirts</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mens Tees Hub — Catalog (Amazon-like, Responsive)</title>
 
-  <!-- ===================== FULL CSS (desktop preserved, mobile fixed) ===================== -->
-  <style>
-    /* ========= Reset & helpers ========= */
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; padding-top: 80px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    img { max-width: 100%; display: block; height: auto; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 
-    :root {
-      --header-h: 80px;
-      --ink: #2c3e50;
-      --accent: #e74c3c;
-      --ok: #2ecc71;
-      --shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+<style>
+  /* ===========================
+     TOKENS & RESET
+     =========================== */
+  :root{
+    --bg:#f3f4f6;
+    --panel:#fff;
+    --muted:#6b7280;
+    --text:#0f1724;
+    --accent:#0f66f0;
+    --accent-2:#ffd100;
+    --danger:#ef4444;
+    --radius:10px;
+    --shadow: 0 10px 30px rgba(15,23,42,0.06);
+    --header-h:72px;
+    --max-width:1200px;
+    --gap:16px;
+    --mobile-break:768px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg); color:var(--text);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    padding-top: var(--header-h);
+  }
+  a{ color:inherit; text-decoration:none }
+  img{ display:block; max-width:100%; height:auto }
 
-    /* ================= Header & Nav (desktop unchanged) ================= */
-    header {
-      position: fixed;
-      top: 0;
+  /* ===========================
+     HEADER
+     =========================== */
+  header {
+    position:fixed; inset:0 0 auto 0; height:var(--header-h); background:linear-gradient(90deg,#0b2a66,#07306a);
+    z-index:1600; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow);
+  }
+  .header-inner { 
+    width:100%; 
+    max-width:var(--max-width); 
+    margin:0 auto; 
+    padding:10px 16px; 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+    justify-content:space-between; 
+  }
+  
+  .left-controls { 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+  }
+  
+  .brand { 
+    display:flex; 
+    gap:10px; 
+    align-items:center; 
+    color:#fff; 
+    font-weight:700; 
+    font-size:1.05rem; 
+  }
+  
+  .brand ion-icon { 
+    color:var(--accent-2); 
+    font-size:1.5rem 
+  }
+
+  /* hamburger (mobile-only) */
+  .hamburger {
+    display:none; 
+    flex-direction: column;
+    width:44px; 
+    height:44px; 
+    border-radius:8px; 
+    background:transparent; 
+    align-items:center; 
+    justify-content:center; 
+    cursor:pointer; 
+    border:0;
+    padding: 10px;
+  }
+  
+  .hamburger .bar { 
+    width:24px; 
+    height:3px; 
+    background:#fff; 
+    display:block; 
+    border-radius:2px; 
+    transition: all 0.3s ease;
+    margin: 2px 0;
+  }
+  
+  .hamburger.active .bar:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+  
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger.active .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Search area */
+  .search-wrap { 
+    flex:1; 
+    display:flex; 
+    gap:8px; 
+    align-items:center; 
+    min-width:0; 
+    max-width: 600px;
+  }
+  
+  .category-select { 
+    min-width:130px; 
+    border-radius:8px; 
+    padding:8px 10px; 
+    border:0; 
+    font-weight:600; 
+    background:#eef3ff; 
+    color:#07306a 
+  }
+  
+  .search-input { 
+    flex:1; 
+    display:flex; 
+    align-items:center; 
+    background:#fff; 
+    border-radius:8px; 
+    overflow:hidden; 
+    box-shadow:0 6px 22px rgba(2,6,23,0.08); 
+  }
+  
+  .search-input input { 
+    border:0; 
+    padding:10px 12px; 
+    font-size:14px; 
+    width:100%; 
+    outline:none; 
+    min-width:0; 
+  }
+  
+  .search-btn { 
+    background:var(--accent); 
+    color:#fff; 
+    border:0; 
+    padding:10px 12px; 
+    cursor:pointer; 
+    display:inline-flex; 
+    align-items:center; 
+    gap:8px 
+  }
+
+  /* right utilities */
+  .hdr-utilities { 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+    color:#fff; 
+  }
+  
+  .hdr-utilities .link { 
+    font-weight:600; 
+    font-size:14px; 
+    opacity:0.95 
+  }
+
+  /* ===========================
+     LAYOUT
+     =========================== */
+  .container { 
+    width:100%; 
+    max-width:var(--max-width); 
+    margin:18px auto; 
+    padding:0 16px; 
+    display:grid; 
+    grid-template-columns: 280px 1fr; 
+    gap:var(--gap); 
+    align-items:start; 
+  }
+  
+  @media (max-width:var(--mobile-break)) { 
+    .container { 
+      grid-template-columns: 1fr; 
+      padding: 0 12px;
+      gap: 0;
+    } 
+    .hamburger{ 
+      display: flex;
+    } 
+    .search-wrap {
+      position: absolute;
+      top: 100%;
       left: 0;
-      width: 100%;
-      z-index: 99;
-      background-color: #2c3e50;
-      box-shadow: var(--shadow);
-      height: var(--header-h);
-    }
-
-    .nav {
-      max-width: 1200px;
-      margin: auto;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      position: relative;
-    }
-
-    .nav-left { display:flex; align-items:center; gap:12px; }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-decoration: none;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo ion-icon { font-size: 2rem; color: var(--accent); }
-
-    .home-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: white;
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      padding: 8px 15px;
-      border-radius: 5px;
-      transition: all 0.3s ease;
-      margin-right: 0;
-      background: transparent;
-    }
-    .home-btn ion-icon { font-size: 1.4rem; }
-    .home-btn:hover { background-color: rgba(255,255,255,0.06); transform: translateY(-2px); }
-
-    /* ===== Header cart box (desktop match your original inline style) =====
-       — Default (desktop) size kept to 50x50 to match your previous inline style.
-       — Positioned top-right in header. Mobile sizes are adjusted below. */
-    .box {
-      width: 50px;
-      height: 50px;
-      background-color: #34495e;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      z-index: 1100;
-    }
-    .box ion-icon { font-size: 1.8rem; color: #fff; display:block; }
-    .cart-count {
-      position: absolute;
-      background-color: var(--accent);
-      top: -8px;
-      right: -8px;
-      padding: 0;
-      height: 20px;
-      width: 20px;
-      line-height: 20px;
-      border-radius: 50%;
-      z-index: 1200;
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: #fff;
-      text-align: center;
-    }
-
-    /* ================= Container & product layout (desktop preserved) ================= */
-    .container { max-width: 1200px; padding: 2rem; margin: 0 auto; }
-    .title { font-size: 2.2rem; font-weight: 600; margin-bottom: 2rem; color: var(--ink); text-align: center; }
-
-    .filter { margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; }
-    .filter label { font-size: 1.1rem; color: var(--ink); font-weight: 500; }
-    .filter select { padding: 10px 15px; font-size: 1rem; border-radius: 8px; border: 1px solid #ddd; background-color: white; cursor: pointer; min-width: 200px; }
-
-    .tshirt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-    .tshirt-box { position: relative; background-color: white; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 10px; transition: transform 0.3s; }
-    .tshirt-box:hover { transform: translateY(-5px); }
-    .pic { overflow: hidden; border-radius: 8px; height: 400px; width: 100%; margin: 0 auto; background:#fff; display:flex; align-items:center; justify-content:center; }
-    .tshirt-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s; }
-    .tshirt-box:hover .tshirt-img { transform: scale(1.03); }
-    .tshirt-title { font-size: 1.3rem; font-weight: 600; margin: 15px 0 10px; color: var(--ink); }
-    .tshirt-price { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 15px; display: block; }
-
-    /* Product card add-cart icon (per-card) — kept desktop look */
-    .tshirt-box ion-icon.add-cart {
-      font-size: 1.8rem;
-      color: #2ecc71;
-      cursor: pointer;
-      position: absolute;
-      right: 15px;
-      bottom: 15px;
-      border: 2px solid #2ecc71;
-      border-radius: 50%;
-      padding: 5px;
-      background: #fff;
-      transition: all 0.3s;
-    }
-    .tshirt-box ion-icon.add-cart:hover {
-      background: #2ecc71;
-      color: #fff;
-      transform: scale(1.1);
-    }
-
-    /* ================= Size Modal (unchanged behavior) ================= */
-    .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-    .modal-content { background-color: #fefefe; margin: 10% auto; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
-    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #aaa; font-weight: bold; cursor: pointer; background: none; border: none; padding: 0; }
-    .close-modal:hover { color: #333; }
-    .modal-content h3 { margin-bottom: 25px; color: var(--ink); font-size: 1.5rem; text-align: center; font-weight: 600; }
-    .size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .size-btn { padding: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.3s; }
-    .size-btn:hover { background-color: var(--accent); }
-
-    /* ================= CART PANEL (slide-in) =================
-       Desktop: width 400px (same look as your original) — preserved.
-       Mobile: overridden in media queries (smaller width + internal scroll). */
-    #cart-panel {
-      position: fixed;
-      top: var(--header-h);
       right: 0;
-      height: calc(100vh - var(--header-h));
-      width: 400px; /* desktop width — unchanged */
-      background: #fff;
-      box-shadow: -2px 0 15px rgba(0,0,0,0.2);
-      padding: 20px;
-      border-radius: 10px 0 0 10px;
-      z-index: 9999;
+      background: #07306a;
+      padding: 12px;
+      margin-top: 0;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1601;
+    }
+    .search-wrap.active {
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      /* hide by slide to right */
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(.2,.9,.2,1);
-      -webkit-overflow-scrolling: touch;
     }
-    /* when open */
-    #cart-panel.open { transform: translateX(0); }
-
-    .cart-title { font-weight: 700; font-size: 1.15rem; color: var(--ink); margin-bottom: 10px; }
-    .cart-content { flex: 1 1 auto; overflow-y: auto; margin-bottom: 10px; padding-right: 6px; }
-    .cart-item { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-    .total { margin-top: 10px; }
-    .total-title { font-weight: 600; font-size: 1.05rem; color: var(--ink); }
-    .total-price { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
-    #checkout-btn { width: 100%; margin-top: 10px; background: linear-gradient(to right, #27ae60, #2ecc71); color: white; font-weight: bold; padding: 12px 0; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease; }
-    #checkout-btn:active { transform: translateY(1px); }
-    .cart-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; background: none; border: none; cursor: pointer; color: #aaa; }
-
-    /* Prevent background scroll when cart open (JS toggles .cart-open on body) */
-    body.cart-open { overflow: hidden; }
-
-    /* ================= Responsive (mobile-only overrides) ================= */
-    @media (max-width: 768px) {
-      :root { --header-h: 70px; } /* slightly smaller header on tablet */
-      header { height: var(--header-h); }
-      body { padding-top: var(--header-h); }
-
-      .logo { font-size: 1.45rem; }
-      .home-btn { font-size: 0.95rem; padding: 6px 12px; }
-
-      /* shrink product image height a bit */
-      .pic { height: 280px; }
-      .tshirt-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; }
-
-      /* shrink header cart icon on tablets */
-      .box { width: 44px; height: 44px; right: 12px; }
-      .box ion-icon { font-size: 1.5rem; }
-
-      /* cart panel width smaller on tablets */
-      #cart-panel {
-        width: 85%;
-        max-width: 420px;
-        top: var(--header-h);
-        height: calc(100vh - var(--header-h));
-        border-radius: 10px 0 0 10px;
-      }
-      .modal-content { margin-top: 12%; } /* size modal slight offset on tablet */
+    .hdr-utilities .link:not(:last-child) {
+      display: none;
     }
-
-    @media (max-width: 480px) {
-      :root { --header-h: 60px; }
-      header { height: var(--header-h); }
-      body { padding-top: var(--header-h); }
-
-      .nav { padding: 8px 12px; }
-      .logo { font-size: 1.22rem; }
-
-      /* mobile: make cart icon smaller and ensure it stays top-right */
-      .box { width: 40px; height: 40px; right: 10px; top: 50%; transform: translateY(-50%); }
-      .box ion-icon { font-size: 1.25rem !important; } /* override inline if present */
-
-      /* product cards become single column */
-      .tshirt-grid { grid-template-columns: 1fr; gap: 1rem; }
-      .pic { height: 220px; }
-
-      /* modal (size modal) smaller */
-      .modal-content { margin: 18% auto; width: 92%; max-width: 360px; padding: 16px; }
-
-      /* CART PANEL: use nearly full width but not exceed viewport, and allow internal scroll */
-      #cart-panel {
-        width: 92%;
-        max-width: 92%;
-        right: 0;
-        top: var(--header-h);
-        height: calc(100vh - var(--header-h));
-        border-radius: 10px 0 0 10px;
-      }
-      .cart-content { max-height: calc(100vh - var(--header-h) - 140px); } /* let content scroll nicely (header + footer space) */
-      .cart-close-btn { top: 8px; right: 12px; font-size: 20px; }
-      #checkout-btn { padding: 10px 0; font-size: 1rem; }
+    .brand {
+      font-size: 0.9rem;
     }
-  </style>
-  <!-- ===================== CSS END ===================== -->
+  }
 
+  /* SIDEBAR (hidden on mobile) */
+  .sidebar {
+    background:var(--panel); 
+    border-radius:var(--radius); 
+    padding:14px; 
+    box-shadow:var(--shadow);
+    position:sticky; 
+    top:calc(var(--header-h) + 12px); 
+    max-height:calc(100vh - var(--header-h) - 24px); 
+    overflow:auto;
+  }
+  
+  @media (max-width:var(--mobile-break)) { 
+    .sidebar { 
+      display: none !important;
+    } 
+  }
+
+  .filter-title { 
+    margin:0 0 8px 0; 
+    font-weight:700; 
+    color:var(--text);
+  }
+  
+  .filter-row { 
+    margin-bottom:12px 
+  }
+
+  /* MAIN */
+  .main { 
+    display:flex; 
+    flex-direction:column; 
+    gap:12px; 
+  }
+  
+  .breadcrumb { 
+    font-size:13px; 
+    color:var(--muted) 
+  }
+  
+  .top-controls { 
+    display:flex; 
+    justify-content:space-between; 
+    gap:12px; 
+    align-items:center;
+    flex-wrap: wrap;
+  }
+  
+  .left-top { 
+    display:flex; 
+    gap:10px; 
+    align-items:center 
+  }
+  
+  .right-top { 
+    display:flex; 
+    gap:10px; 
+    align-items:center;
+    flex-wrap: wrap;
+  }
+
+  .btn { 
+    background:var(--panel); 
+    border-radius:8px; 
+    padding:8px 10px; 
+    border:1px solid rgba(0,0,0,0.06); 
+    cursor:pointer; 
+    font-weight:600;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .btn.primary { 
+    background:var(--accent); 
+    color:#fff; 
+    border:0; 
+    box-shadow:0 8px 30px rgba(15,100,240,0.12) 
+  }
+  
+  .btn.selected { 
+    background:var(--accent); 
+    color:#fff; 
+  }
+
+  /* RESULT GRID */
+  .results { 
+    display:grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap:14px; 
+  }
+  
+  @media (max-width:1100px) { 
+    .results { 
+      grid-template-columns: repeat(2, 1fr); 
+    } 
+  }
+  
+  @media (max-width:700px) { 
+    .results { 
+      grid-template-columns: 1fr; 
+      gap: 12px;
+    } 
+  }
+
+  .product { 
+    background:var(--panel); 
+    border-radius:10px; 
+    padding:12px; 
+    box-shadow:var(--shadow); 
+    display:flex; 
+    flex-direction:column; 
+    transition:transform .18s; 
+    min-height:360px; 
+  }
+  
+  .product:hover { 
+    transform:translateY(-6px); 
+  }
+  
+  .thumb { 
+    height:260px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    border-radius:8px; 
+    overflow:hidden; 
+    background:#fff; 
+  }
+  
+  .meta { 
+    padding-top:10px; 
+    display:flex; 
+    flex-direction:column; 
+    gap:8px; 
+    flex:1; 
+  }
+  
+  .title { 
+    font-weight:700; 
+    font-size:14px; 
+    color:var(--text); 
+    margin:0 
+  }
+  
+  .muted { 
+    color:var(--muted) 
+  }
+  
+  .price { 
+    color:var(--accent); 
+    font-weight:800; 
+    font-size:15px 
+  }
+
+  .actions-row { 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    gap:8px; 
+    margin-top:auto 
+  }
+  
+  .icon-btn { 
+    width:44px; 
+    height:44px; 
+    border-radius:8px; 
+    display:inline-flex; 
+    align-items:center; 
+    justify-content:center; 
+    background:#f8fafc; 
+    border:1px solid rgba(0,0,0,0.04); 
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .icon-btn:hover {
+    background: #eef3ff;
+    transform: scale(1.05);
+  }
+
+  /* CART PANEL */
+  .cart-panel { 
+    position:fixed; 
+    right:0; 
+    top:var(--header-h); 
+    height:calc(100vh - var(--header-h)); 
+    width:420px; 
+    max-width:92%; 
+    background:var(--panel); 
+    border-radius:10px 0 0 10px; 
+    box-shadow:-10px 0 40px rgba(2,6,23,0.12); 
+    transform:translateX(110%); 
+    transition:transform .24s cubic-bezier(.2,.9,.2,1); 
+    z-index:1650; 
+    display:flex; 
+    flex-direction:column; 
+    overflow:hidden; 
+  }
+  
+  .cart-panel.open { 
+    transform:translateX(0) 
+  }
+  
+  @media (max-width:700px) { 
+    .cart-panel { 
+      width:100%; 
+      border-radius: 0;
+    } 
+  }
+
+  .cart-header { 
+    padding:12px 14px; 
+    border-bottom:1px solid rgba(0,0,0,0.04); 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center;
+    background: #f8fafc;
+  }
+  
+  .cart-content { 
+    padding:12px; 
+    overflow:auto; 
+    flex:1; 
+  }
+  
+  .cart-footer { 
+    padding:12px; 
+    border-top:1px solid rgba(0,0,0,0.04);
+    background: #f8fafc;
+  }
+
+  /* MODAL (quick view) */
+  .modal-backdrop { 
+    position:fixed; 
+    inset:0; 
+    display:none; 
+    align-items:center; 
+    justify-content:center; 
+    background:rgba(2,6,23,0.45); 
+    z-index:1700; 
+    padding:12px 
+  }
+  
+  .modal { 
+    width:min(920px,96%); 
+    background:var(--panel); 
+    border-radius:12px; 
+    overflow:auto; 
+    max-height:92vh; 
+    box-shadow:0 30px 80px rgba(2,6,23,0.28); 
+    padding:12px 
+  }
+  
+  .modal-grid { 
+    display:grid; 
+    grid-template-columns:1fr 360px; 
+    gap:12px 
+  }
+  
+  @media (max-width:900px) { 
+    .modal-grid { 
+      grid-template-columns:1fr 
+    } 
+  }
+
+  /* TOASTS */
+  .toasts { 
+    position:fixed; 
+    right:18px; 
+    bottom:18px; 
+    display:flex; 
+    flex-direction:column; 
+    gap:8px; 
+    z-index:1800 
+  }
+
+  /* small helpers */
+  .sr-only { 
+    position:absolute; 
+    left:-9999px; 
+    top:auto; 
+    width:1px; 
+    height:1px; 
+    overflow:hidden 
+  }
+  
+  .focusable:focus { 
+    outline:3px solid rgba(15,100,240,0.14); 
+    outline-offset:2px; 
+  }
+  
+  .hidden { 
+    display:none !important; 
+  }
+  
+  /* Cart item styles */
+  .cart-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  
+  .cart-item img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  
+  .cart-item-details {
+    flex: 1;
+  }
+  
+  .cart-item-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .cart-item-meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid rgba(0,0,0,0.06);
+    cursor: pointer;
+  }
+  
+  .qty-display {
+    display: inline-block;
+    width: 28px;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  /* Empty cart state */
+  .empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+  
+  .empty-cart ion-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  /* Mobile search toggle */
+  .search-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 10px;
+  }
+  
+  @media (max-width:var(--mobile-break)) {
+    .search-toggle {
+      display: block;
+    }
+  }
+</style>
 </head>
 <body>
-  <header>
-    <div class="nav">
-      <div class="nav-left">
-        <a href="index.html" class="home-btn">
-          <ion-icon name="home"></ion-icon>
-          <span>Home</span>
-        </a>
-        <a href="#" class="logo">
-          <ion-icon name="shirt"></ion-icon>Mens Tees Hub
-        </a>
-      </div>
 
-      <!-- header cart box (kept markup, look preserved on desktop; CSS adjusts mobile) -->
-      <div class="box" id="cart-box">
-        <div class="cart-count">0</div>
-        <ion-icon name="cart" id="cart-icon"></ion-icon>
-      </div>
+<header>
+  <div class="header-inner">
+    <div class="left-controls">
+      <button class="hamburger" id="filterToggle" aria-label="Open filters (mobile)">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <div class="brand" aria-hidden="true"><ion-icon name="logo-amplify"></ion-icon> Mens Tees Hub</div>
     </div>
-  </header>
 
-  <!-- Size selection modal (unchanged) -->
-  <div class="modal" id="sizeModal">
-    <div class="modal-content">
-      <button class="close-modal">&times;</button>
-      <h3>Select Size for <span id="modal-product-title"></span></h3>
-      <div class="size-options">
-        <button class="size-btn" data-size="S">S</button>
-        <button class="size-btn" data-size="M">M</button>
-        <button class="size-btn" data-size="L">L</button>
-        <button class="size-btn" data-size="XL">XL</button>
-        <button class="size-btn" data-size="XXL">XXL</button>
-      </div>
-    </div>
-  </div>
+    <button class="search-toggle" id="searchToggle" aria-label="Toggle search">
+      <ion-icon name="search-outline"></ion-icon>
+    </button>
 
-  <div class="container">
-    <h2 class="title">Discover Premium Quality T-Shirts</h2>
-    <div class="filter">
-      <label for="category">Filter by Category:</label>
-      <select id="category">
-        <option value="all">All</option>
+    <div class="search-wrap" id="searchWrap" role="search" aria-label="Site search">
+      <select id="searchCategory" class="category-select" aria-label="Search category">
+        <option value="all">All Categories</option>
         <option value="V-Neck Tees">V-Neck Tees</option>
         <option value="Long Sleeve Tees">Long Sleeve Tees</option>
         <option value="Graphics Design Tees">Graphics Design Tees</option>
         <option value="Hoodies">Hoodies</option>
       </select>
+
+      <div class="search-input">
+        <input id="searchBox" placeholder="Search for products, brands and more" aria-label="Search products" />
+        <button id="doSearch" class="search-btn" aria-label="Search"><ion-icon name="search-outline"></ion-icon></button>
+      </div>
     </div>
 
-    <div class="tshirt-grid" id="productGrid">
-      <!-- Static 16 items below (kept exactly) -->
+    <div class="hdr-utilities" role="navigation" aria-label="Header utilities">
+      <div class="link">Hello, Guest</div>
+      <div class="link">Orders</div>
 
-      <!-- V-Neck Tees -->
-      <div class="tshirt-box" data-category="V-Neck Tees" data-id="101">
-        <div class="pic">
-          <img src="./images/v-neck3.jpg" class="tshirt-img" alt="V-Neck Tee">
+      <div id="cartShortcut" style="position:relative; cursor:pointer;" aria-label="Open cart" tabindex="0">
+        <div style="background:#fff;border-radius:8px;padding:6px 8px;display:flex;align-items:center;gap:8px">
+          <ion-icon name="cart-outline" style="color:#0b2a66;font-size:20px"></ion-icon>
+          <span id="cartCount" style="font-weight:700;color:#0b2a66">0</span>
         </div>
-        <h2 class="tshirt-title">V-Neck Tee</h2>
-        <span class="tshirt-price">Rs.250</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
       </div>
-
-      <div class="tshirt-box" data-category="V-Neck Tees" data-id="102">
-        <div class="pic">
-          <img src="./images/v-neck4.jpg" class="tshirt-img" alt="V-Neck Tee">
-        </div>
-        <h2 class="tshirt-title">V-Neck Tee</h2>
-        <span class="tshirt-price">Rs.250</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="V-Neck Tees" data-id="103">
-        <div class="pic">
-          <img src="./images/v-neck1.jpg" class="tshirt-img" alt="V-Neck Tee">
-        </div>
-        <h2 class="tshirt-title">V-Neck Tee</h2>
-        <span class="tshirt-price">Rs.250</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="V-Neck Tees" data-id="104">
-        <div class="pic">
-          <img src="./images/v-neck2.jpg" class="tshirt-img" alt="V-Neck Tee">
-        </div>
-        <h2 class="tshirt-title">V-Neck Tee</h2>
-        <span class="tshirt-price">Rs.250</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <!-- Long Sleeve Tees -->
-      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="105">
-        <div class="pic">
-          <img src="./images/sleeve3.jpg" class="tshirt-img" alt="Long Sleeve Tee">
-        </div>
-        <h2 class="tshirt-title">Long Sleeve Tee</h2>
-        <span class="tshirt-price">Rs.280</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="106">
-        <div class="pic">
-          <img src="./images/sleeve4.jpg" class="tshirt-img" alt="Long Sleeve Tee">
-        </div>
-        <h2 class="tshirt-title">Long Sleeve Tee</h2>
-        <span class="tshirt-price">Rs.280</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="107">
-        <div class="pic">
-          <img src="./images/sleeve5.jpg" class="tshirt-img" alt="Long Sleeve Tee">
-        </div>
-        <h2 class="tshirt-title">Long Sleeve Tee</h2>
-        <span class="tshirt-price">Rs.280</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Long Sleeve Tees" data-id="108">
-        <div class="pic">
-          <img src="./images/sleeve6.jpg" class="tshirt-img" alt="Long Sleeve Tee">
-        </div>
-        <h2 class="tshirt-title">Long Sleeve Tee</h2>
-        <span class="tshirt-price">Rs.280</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <!-- Graphics Design Tees -->
-      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="109">
-        <div class="pic">
-          <img src="./images/graphics3.jpg" class="tshirt-img" alt="Graphic Design Tee">
-        </div>
-        <h2 class="tshirt-title">Graphic Design Tee</h2>
-        <span class="tshirt-price">Rs.300</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="110">
-        <div class="pic">
-          <img src="./images/graphics4.jpg" class="tshirt-img" alt="Graphic Design Tee">
-        </div>
-        <h2 class="tshirt-title">Graphic Design Tee</h2>
-        <span class="tshirt-price">Rs.300</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="111">
-        <div class="pic">
-          <img src="./images/graphics5.jpg" class="tshirt-img" alt="Graphic Design Tee">
-        </div>
-        <h2 class="tshirt-title">Graphic Design Tee</h2>
-        <span class="tshirt-price">Rs.300</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Graphics Design Tees" data-id="112">
-        <div class="pic">
-          <img src="./images/graphics6.jpg" class="tshirt-img" alt="Graphic Design Tee">
-        </div>
-        <h2 class="tshirt-title">Graphic Design Tee</h2>
-        <span class="tshirt-price">Rs.300</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <!-- Hoodies -->
-      <div class="tshirt-box" data-category="Hoodies" data-id="113">
-        <div class="pic">
-          <img src="./images/hoody1.jpg" class="tshirt-img" alt="Hoodie">
-        </div>
-        <h2 class="tshirt-title">Hoodie</h2>
-        <span class="tshirt-price">Rs.400</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Hoodies" data-id="114">
-        <div class="pic">
-          <img src="./images/hoody3.jpg" class="tshirt-img" alt="Hoodie">
-        </div>
-        <h2 class="tshirt-title">Hoodie</h2>
-        <span class="tshirt-price">Rs.400</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Hoodies" data-id="115">
-        <div class="pic">
-          <img src="./images/hoody5.jpg" class="tshirt-img" alt="Hoodie">
-        </div>
-        <h2 class="tshirt-title">Hoodie</h2>
-        <span class="tshirt-price">Rs.400</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
-      <div class="tshirt-box" data-category="Hoodies" data-id="116">
-        <div class="pic">
-          <img src="./images/hoody6.jpg" class="tshirt-img" alt="Hoodie">
-        </div>
-        <h2 class="tshirt-title">Hoodie</h2>
-        <span class="tshirt-price">Rs.400</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      </div>
-
     </div>
   </div>
+</header>
 
-  <!-- CART PANEL (slide from right). Initially closed (no .open). -->
-  <div class="cart" id="cart-panel" aria-hidden="true">
-    <div class="cart-title">Your Cart</div>
-    <div class="cart-content"></div>
-    <div class="total">
-      <div class="total-title">Total</div>
-      <div class="total-price">Rs.0.00</div>
+<main class="container" role="main">
+  <!-- Sidebar - COMPLETELY HIDDEN ON MOBILE -->
+  <aside class="sidebar" id="sidebar" aria-label="Filters" role="region">
+    <h4 class="filter-title">Refine results</h4>
+
+    <div class="filter-row">
+      <div class="muted">Category</div>
+      <select id="sideCategory" style="width:100%; margin-top:8px; padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.06)">
+        <option value="all">All</option>
+        <option>V-Neck Tees</option>
+        <option>Long Sleeve Tees</option>
+        <option>Graphics Design Tees</option>
+        <option>Hoodies</option>
+      </select>
     </div>
-    <button id="checkout-btn">Checkout</button>
-    <button class="cart-close-btn" id="cart-close">×</button>
+
+    <div class="filter-row">
+      <div class="muted">Price</div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <input id="minPrice" type="number" placeholder="Min" style="width:100%; padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.06)">
+        <input id="maxPrice" type="number" placeholder="Max" style="width:100%; padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.06)">
+      </div>
+      <div style="margin-top:8px"><button id="applyPrice" class="btn">Apply</button></div>
+    </div>
+
+    <div class="filter-row">
+      <div class="muted">Ratings</div>
+      <div style="margin-top:8px">
+        <label style="display:block; margin-bottom:6px"><input type="checkbox" class="rating" value="4" /> 4★ & up</label>
+        <label style="display:block"><input type="checkbox" class="rating" value="3" /> 3★ & up</label>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="muted">Color</div>
+      <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+        <button class="btn color-filter" data-color="black">Black</button>
+        <button class="btn color-filter" data-color="white">White</button>
+        <button class="btn color-filter" data-color="blue">Blue</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <button id="clearFilters" class="btn">Clear filters</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main" aria-label="Search results">
+    <div class="breadcrumb"><span class="muted">Home</span> › <strong>Mens Tees</strong></div>
+
+    <div class="top-controls">
+      <div class="left-top">
+        <div style="font-weight:800">Showing results</div>
+        <div class="muted" id="resultSummary" style="margin-left:8px">—</div>
+      </div>
+
+      <div class="right-top">
+        <label class="muted" for="sortSelect">Sort</label>
+        <select id="sortSelect" class="btn" style="padding:8px;">
+          <option value="relevance">Relevance</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="newest">Newest</option>
+        </select>
+
+        <button id="viewToggle" class="btn">List View</button>
+      </div>
+    </div>
+
+    <div id="results" class="results" aria-live="polite"></div>
+
+    <div style="display:flex; justify-content:center; margin-top:12px;">
+      <div id="pagination" style="display:flex; gap:6px;"></div>
+    </div>
+  </section>
+</main>
+
+<!-- Quick view modal -->
+<div id="quickModalBackdrop" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div style="display:flex; justify-content:flex-end;"><button id="quickClose" class="btn">Close</button></div>
+    <div class="modal-grid">
+      <div style="padding:12px; display:flex; align-items:center; justify-content:center;">
+        <img id="quickImg" src="" alt="" style="max-width:100%; max-height:420px; object-fit:contain; border-radius:8px; background:#fff;">
+      </div>
+      <div style="padding:8px;">
+        <h2 id="quickTitle" style="margin:0 0 8px 0"></h2>
+        <div id="quickPrice" style="color:var(--accent); font-weight:800; margin-bottom:8px;"></div>
+        <div id="quickCategory" class="muted"></div>
+
+        <div style="margin-top:12px">
+          <div style="font-weight:700; margin-bottom:8px">Size</div>
+          <div id="sizeList" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn" data-size="S">S</button>
+            <button class="btn" data-size="M">M</button>
+            <button class="btn" data-size="L">L</button>
+            <button class="btn" data-size="XL">XL</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:8px;">
+          <button id="quickAdd" class="btn primary">Add to cart</button>
+          <button id="quickWishlist" class="btn">Wishlist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart panel -->
+<aside id="cartPanel" class="cart-panel" aria-hidden="true">
+  <div class="cart-header">
+    <div style="font-weight:800">Shopping cart</div>
+    <div><button id="closeCart" class="btn">Close</button></div>
   </div>
 
-  <!-- ===================== SCRIPTS (updated for robust behavior & mobile) ===================== -->
-  <script>
-/*
-  Full JS (fixed: clicking inside cart no longer closes it).
-  Replace your existing script with this block.
-*/
-(() => {
-  // ======= Selectors =======
-  const productGrid = document.getElementById('productGrid');
-  const sizeModal = document.getElementById('sizeModal');
-  const modalProductTitle = document.getElementById('modal-product-title');
-  const sizeButtons = document.querySelectorAll('.size-btn');
-  const cartCountEl = document.querySelector('.cart-count');
-  const cartBox = document.getElementById('cart-box');    // header cart wrapper
-  const cartIcon = document.getElementById('cart-icon');  // ion-icon inside header box
-  const cartCloseBtn = document.getElementById('cart-close');
-  const categorySelect = document.getElementById('category');
-  const cartPanel = document.getElementById('cart-panel');
-  const cartContentEl = document.querySelector('.cart-content');
-  const totalPriceEl = document.querySelector('.total-price');
-  const checkoutBtn = document.getElementById('checkout-btn');
-  const sizeModalClose = document.querySelector('.close-modal');
+  <div class="cart-content" id="cartContent"></div>
 
-  // ======= State =======
-  // Use consistent sessionStorage key: 'cartItems'
-  let cartItems = JSON.parse(sessionStorage.getItem('cartItems') || '[]');
-  let selectedProduct = null;
-  let allProducts = [];
+  <div class="cart-footer">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-weight:700">Subtotal</div>
+      <div id="cartSubtotal" style="font-weight:800; color:var(--accent)">Rs.0.00</div>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:8px;">
+      <button id="checkoutBtn" class="btn primary" style="flex:1">Proceed to Checkout</button>
+      <button id="clearCartBtn" class="btn">Clear</button>
+    </div>
+  </div>
+</aside>
 
-  // ======= Helpers =======
-  function persistCart() {
-    sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+<!-- Toasts -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+/* ===========================
+   Responsive Amazon-like Catalog JS
+   - Filters, search, sort, pagination
+   - Sidebar toggle for mobile (hamburger)
+   - Quick view modal & add to cart
+   - Cart slide-in (mobile-friendly)
+   =========================== */
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const formatPrice = p => 'Rs.' + (Number(p)||0).toFixed(2);
+const toast = (msg, ms=2200) => {
+  const t = document.createElement('div');
+  t.style.padding='10px 12px'; t.style.borderRadius='8px'; t.style.color='#fff';
+  t.style.background='linear-gradient(90deg,#10b981,#059669)'; t.style.boxShadow='0 10px 30px rgba(2,6,23,0.18)'; t.innerText = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(()=> { t.style.opacity=0; setTimeout(()=> t.remove(),200); }, ms);
+};
+
+/* ---------- static product data (the 16 you had) ---------- */
+let PRODUCTS = [
+  { id:101, title:'V-Neck Tee', price:250, category:'V-Neck Tees', image:'./images/v-neck3.jpg', rating:4.4, color: 'black' },
+  { id:102, title:'V-Neck Tee', price:250, category:'V-Neck Tees', image:'./images/v-neck4.jpg', rating:4.2, color: 'white' },
+  { id:103, title:'V-Neck Tee', price:250, category:'V-Neck Tees', image:'./images/v-neck1.jpg', rating:4.6, color: 'blue' },
+  { id:104, title:'V-Neck Tee', price:250, category:'V-Neck Tees', image:'./images/v-neck2.jpg', rating:4.3, color: 'black' },
+  { id:105, title:'Long Sleeve Tee', price:280, category:'Long Sleeve Tees', image:'./images/sleeve3.jpg', rating:4.5, color: 'white' },
+  { id:106, title:'Long Sleeve Tee', price:280, category:'Long Sleeve Tees', image:'./images/sleeve4.jpg', rating:4.1, color: 'blue' },
+  { id:107, title:'Long Sleeve Tee', price:280, category:'Long Sleeve Tees', image:'./images/sleeve5.jpg', rating:4.0, color: 'black' },
+  { id:108, title:'Long Sleeve Tee', price:280, category:'Long Sleeve Tees', image:'./images/sleeve6.jpg', rating:4.2, color: 'white' },
+  { id:109, title:'Graphic Design Tee', price:300, category:'Graphics Design Tees', image:'./images/graphics3.jpg', rating:4.7, color: 'blue' },
+  { id:110, title:'Graphic Design Tee', price:300, category:'Graphics Design Tees', image:'./images/graphics4.jpg', rating:4.6, color: 'black' },
+  { id:111, title:'Graphic Design Tee', price:300, category:'Graphics Design Tees', image:'./images/graphics5.jpg', rating:4.3, color: 'white' },
+  { id:112, title:'Graphic Design Tee', price:300, category:'Graphics Design Tees', image:'./images/graphics6.jpg', rating:4.5, color: 'blue' },
+  { id:113, title:'Hoodie', price:400, category:'Hoodies', image:'./images/hoody1.jpg', rating:4.6, color: 'black' },
+  { id:114, title:'Hoodie', price:400, category:'Hoodies', image:'./images/hoody3.jpg', rating:4.2, color: 'white' },
+  { id:115, title:'Hoodie', price:400, category:'Hoodies', image:'./images/hoody5.jpg', rating:4.4, color: 'blue' },
+  { id:116, title:'Hoodie', price:400, category:'Hoodies', image:'./images/hoody6.jpg', rating:4.1, color: 'black' }
+];
+
+/* ---------- app state ---------- */
+let FILTER = { q:'', category:'all', minPrice:null, maxPrice:null, rating:0, color:null };
+let SORT = 'relevance';
+let PAGE = 1;
+const PAGE_SIZE = 12;
+let CART = JSON.parse(sessionStorage.getItem('mt_cart') || '[]');
+
+/* ---------- rendering & helpers ---------- */
+function applyFiltersAndRender() {
+  let out = PRODUCTS.slice();
+
+  // search
+  if (FILTER.q) {
+    const q = FILTER.q.toLowerCase();
+    out = out.filter(p => (p.title||'').toLowerCase().includes(q) || String(p.id).includes(q));
   }
+  // category
+  if (FILTER.category && FILTER.category !== 'all') out = out.filter(p => p.category === FILTER.category);
+  // price
+  if (Number.isFinite(FILTER.minPrice)) out = out.filter(p => p.price >= FILTER.minPrice);
+  if (Number.isFinite(FILTER.maxPrice)) out = out.filter(p => p.price <= FILTER.maxPrice);
+  // rating
+  if (FILTER.rating > 0) out = out.filter(p => (p.rating||0) >= FILTER.rating);
+  // color
+  if (FILTER.color) out = out.filter(p => p.color === FILTER.color);
 
-  function formatPrice(n) {
-    return 'Rs.' + Number(n).toFixed(2);
-  }
+  // sort
+  if (SORT === 'price-asc') out.sort((a,b)=>a.price-b.price);
+  else if (SORT === 'price-desc') out.sort((a,b)=>b.price-a.price);
+  else if (SORT === 'newest') out.sort((a,b)=>b.id - a.id);
 
-  function updateCartCount() {
-    cartCountEl.textContent = cartItems.length || 0;
-  }
+  renderResults(out);
+}
 
-  // safe composedPath fallback
-  function getEventPath(e) {
-    if (e.composedPath) return e.composedPath();
-    const path = [];
-    let el = e.target;
-    while (el) {
-      path.push(el);
-      el = el.parentNode;
-    }
-    path.push(document, window);
-    return path;
-  }
+function renderResults(list) {
+  $('#resultSummary').textContent = `${list.length} products`;
+  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+  if (PAGE > totalPages) PAGE = 1;
+  const start = (PAGE-1)*PAGE_SIZE, end = start + PAGE_SIZE;
+  const pageList = list.slice(start, end);
 
-  // find element matching selector in composed path (works with shadow DOM)
-  function findInPath(path, selector) {
-    for (const el of path) {
-      if (!el || el === window || el === document) continue;
-      try {
-        if (el.matches && el.matches(selector)) return el;
-      } catch (err) {
-        // some nodes in path may not support matches; skip safely
-      }
-    }
-    return null;
-  }
-
-  // ======= Render cart content =======
-  function updateCartContent() {
-    cartContentEl.innerHTML = '';
-    let total = 0;
-
-    if (!cartItems || cartItems.length === 0) {
-      cartContentEl.innerHTML = '<div class="empty-cart" style="padding:20px;color:#666;text-align:center;">Your cart is empty</div>';
-      totalPriceEl.textContent = formatPrice(0);
-      return;
-    }
-
-    cartItems.forEach((item, idx) => {
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${item.image || ''}" alt="${item.title}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;background:#f4f4f4;">
-            <div>
-              <div style="font-size:0.98rem;font-weight:600;">${item.title}</div>
-              <div style="font-size:0.9rem;color:#666;">Size: ${item.size}</div>
-            </div>
+  const resultsEl = $('#results');
+  resultsEl.innerHTML = '';
+  pageList.forEach(p => {
+    const el = document.createElement('article');
+    el.className = 'product';
+    el.dataset.id = p.id;
+    el.innerHTML = `
+      <div class="thumb"><img src="${p.image}" alt="${escapeHtml(p.title)}" loading="lazy"></div>
+      <div class="meta">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="title">${escapeHtml(p.title)}</div>
+            <div class="muted" style="font-size:13px">ID: ${p.id} • ${escapeHtml(p.category)}</div>
           </div>
-          <ion-icon name="trash-outline" class="remove-item" data-index="${idx}" style="font-size:1.25rem; color:#e74c3c; cursor:pointer; flex:0 0 auto;" title="Remove Item"></ion-icon>
+          <div class="price">${formatPrice(p.price)}</div>
         </div>
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
-          <div style="font-weight:600;">${formatPrice(item.price * item.quantity)}</div>
-          <div style="display:inline-flex; align-items:center; gap:8px;">
-            <button class="qty-btn decrease" data-index="${idx}" style="padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer;">-</button>
-            <span style="min-width:28px;text-align:center;">${item.quantity}</span>
-            <button class="qty-btn increase" data-index="${idx}" style="padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer;">+</button>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <div class="muted" style="font-weight:700">${'★'.repeat(Math.round(p.rating || 0))} <span class="muted" style="font-weight:600">${(p.rating||0).toFixed(1)}</span></div>
+          <div class="actions-row">
+            <button class="btn" data-action="quickview">Quick view</button>
+            <button class="icon-btn" data-action="wishlist" aria-label="Wishlist"><ion-icon name="heart-outline"></ion-icon></button>
+            <button class="icon-btn" data-action="add" aria-label="Add to cart"><ion-icon name="cart"></ion-icon></button>
           </div>
         </div>
-      `;
-      cartContentEl.appendChild(div);
-      total += (item.price * item.quantity);
-    });
-
-    totalPriceEl.textContent = formatPrice(total);
-  }
-
-  // ======= Size modal logic =======
-  function openSizeModal(product) {
-    selectedProduct = product;
-    modalProductTitle.textContent = product.title;
-    sizeModal.style.display = 'block';
-  }
-
-  function closeSizeModal() {
-    sizeModal.style.display = 'none';
-    selectedProduct = null;
-  }
-
-  // close size modal button
-  if (sizeModalClose) {
-    sizeModalClose.addEventListener('click', closeSizeModal);
-  }
-
-  // size selection
-  sizeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!selectedProduct) return;
-      const selectedSize = btn.dataset.size;
-      const exists = cartItems.some(i => i.id == selectedProduct.id && i.size === selectedSize);
-      if (exists) {
-        alert(`This item (${selectedProduct.title} - ${selectedSize}) is already in your cart.`);
-        closeSizeModal();
-        return;
-      }
-      const item = {
-        id: selectedProduct.id,
-        title: selectedProduct.title,
-        price: Number(selectedProduct.price) || 0,
-        image: selectedProduct.image || '',
-        size: selectedSize,
-        quantity: 1
-      };
-      cartItems.push(item);
-      persistCart();
-      updateCartCount();
-      updateCartContent();
-      closeSizeModal();
-      alert(`Added ${item.title} - ${item.size} to cart`);
-    });
+      </div>
+    `;
+    resultsEl.appendChild(el);
   });
 
-  // ======= Add-to-cart (delegated) =======
-  productGrid.addEventListener('click', (e) => {
-    const path = getEventPath(e);
-    // find element in path that has class add-cart (works if inner svg clicked)
-    const addBtn = findInPath(path, '.add-cart');
-    if (!addBtn) return;
-    const box = addBtn.closest('.tshirt-box') || findInPath(path, '.tshirt-box'); // fallback if closest fails due to shadow
-    if (!box) return;
+  // pagination controls
+  renderPagination(list.length);
+}
 
-    const product = {
-      id: box.dataset.id || String(Date.now()),
-      title: (box.querySelector('.tshirt-title') && box.querySelector('.tshirt-title').textContent.trim()) || 'Product',
-      price: parseFloat((box.querySelector('.tshirt-price') && box.querySelector('.tshirt-price').textContent.replace(/Rs\.?/g, '').trim()) || '0') || 0,
-      image: (box.querySelector('img') && box.querySelector('img').src) || '',
-      category: box.dataset.category || 'General'
-    };
-    openSizeModal(product);
+function renderPagination(total) {
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const pag = $('#pagination'); pag.innerHTML = '';
+  if (pages <= 1) return;
+  const createBtn = (txt, cb, disabled=false) => {
+    const b = document.createElement('button'); b.className='btn'; b.textContent = txt; if(disabled) b.disabled = true; b.addEventListener('click', cb); return b;
+  };
+  pag.appendChild(createBtn('Prev', ()=>{ if (PAGE>1) { PAGE--; applyFiltersAndRender(); } }, PAGE===1));
+  const start = Math.max(1, PAGE-2), end = Math.min(pages, start+4);
+  for (let i=start;i<=end;i++) {
+    const b = createBtn(i, ()=>{ PAGE=i; applyFiltersAndRender(); });
+    if (i===PAGE) { b.style.fontWeight='800'; b.style.background='var(--accent)'; b.style.color='#fff'; }
+    pag.appendChild(b);
+  }
+  pag.appendChild(createBtn('Next', ()=>{ if (PAGE<pages) { PAGE++; applyFiltersAndRender(); } }, PAGE===pages));
+}
+
+/* ---------- quick view modal ---------- */
+function openQuick(product) {
+  $('#quickImg').src = product.image;
+  $('#quickTitle').textContent = product.title;
+  $('#quickPrice').textContent = formatPrice(product.price);
+  $('#quickCategory').textContent = product.category;
+  $('#quickModalBackdrop').style.display = 'flex';
+  $('#quickModalBackdrop').setAttribute('aria-hidden','false');
+  $('#quickAdd').dataset.id = product.id;
+  
+  // Reset size selection
+  $$('#sizeList button').forEach(x => { 
+    x.classList.remove('selected'); 
+    x.style.background=''; 
+    x.style.color=''; 
   });
-
-  // ======= Cart panel open/close =======
-  function openCartPanel() {
-    cartPanel.classList.add('open');
-    cartPanel.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('cart-open'); // prevents background scroll if desired
-    updateCartContent();
+  // Select M by default
+  const defaultSize = $('#sizeList button[data-size="M"]');
+  if (defaultSize) {
+    defaultSize.classList.add('selected'); 
+    defaultSize.style.background='var(--accent)'; 
+    defaultSize.style.color='#fff';
   }
+}
+function closeQuick() {
+  $('#quickModalBackdrop').style.display = 'none';
+  $('#quickModalBackdrop').setAttribute('aria-hidden','true');
+}
 
-  function closeCartPanel() {
-    cartPanel.classList.remove('open');
-    cartPanel.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('cart-open');
+/* ---------- cart logic ---------- */
+function persistCart(){ sessionStorage.setItem('mt_cart', JSON.stringify(CART)); }
+function addToCart(product, size='M') {
+  const found = CART.find(c=>c.id===product.id && c.size===size);
+  if (found) found.qty += 1; else CART.push({ id:product.id, title:product.title, price:product.price, image:product.image, size, qty:1 });
+  persistCart(); renderCart(); toast(`${product.title} (${size}) added to cart`);
+}
+
+function renderCart() {
+  const c = $('#cartContent'); 
+  c.innerHTML = '';
+  
+  if (CART.length === 0) {
+    c.innerHTML = `
+      <div class="empty-cart">
+        <ion-icon name="cart-outline"></ion-icon>
+        <div>Your cart is empty</div>
+        <div style="margin-top: 8px; font-size: 14px;">Add some items to get started</div>
+      </div>
+    `;
+    $('#cartSubtotal').textContent = formatPrice(0);
+    $('#cartCount').textContent = 0;
+    return;
   }
-
-  // header cart box click toggles panel
-  if (cartBox) {
-    cartBox.addEventListener('click', (e) => {
-      // If user clicks the trash or inside panel inadvertently, we want toggle only when they click the header box
-      const isOpen = cartPanel.classList.contains('open');
-      if (isOpen) closeCartPanel(); else openCartPanel();
-    });
-  }
-
-  // close button inside panel
-  if (cartCloseBtn) cartCloseBtn.addEventListener('click', closeCartPanel);
-
-  // handle escape key to close panel
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (cartPanel.classList.contains('open')) closeCartPanel();
-      if (sizeModal.style.display === 'block') closeSizeModal();
-    }
-  });
-
-  // ======= Click delegation: handle remove & qty buttons inside cart safely using composedPath =======
-  document.addEventListener('click', (e) => {
-    const path = getEventPath(e);
-
-    // If clicked a remove button inside cart
-    const removeEl = findInPath(path, '.remove-item');
-    if (removeEl) {
-      const idx = Number(removeEl.dataset.index);
-      if (!Number.isNaN(idx) && cartItems[idx]) {
-        const confirmRemove = confirm('Are you sure you want to remove this item from your cart?');
-        if (!confirmRemove) return;
-        cartItems.splice(idx, 1);
-        persistCart();
-        updateCartCount();
-        updateCartContent();
-      }
-      return; // processed, do not proceed to outside-close logic
-    }
-
-    // If clicked a qty button (increase/decrease)
-    const qtyEl = findInPath(path, '.qty-btn');
-    if (qtyEl) {
-      const idx = Number(qtyEl.dataset.index);
-      if (!Number.isNaN(idx) && cartItems[idx]) {
-        if (qtyEl.classList.contains('increase')) {
-          cartItems[idx].quantity += 1;
-        } else if (qtyEl.classList.contains('decrease')) {
-          if (cartItems[idx].quantity > 1) cartItems[idx].quantity -= 1;
-        }
-        persistCart();
-        updateCartCount();
-        updateCartContent();
-      }
-      return; // processed
-    }
-
-    // If clicked outside cart-panel on small screens --> close
-    // But first check if the click happened inside cartPanel or header cart box or size modal (so clicks inside won't close)
-    const clickedInsideCart = path.includes(cartPanel) || path.includes(cartBox) || path.includes(sizeModal);
-    if (!clickedInsideCart && cartPanel.classList.contains('open') && window.innerWidth <= 768) {
-      // if panel open and user clicked outside on small screens, close
-      closeCartPanel();
-    }
-  });
-
-  // ======= Category filter (unchanged) =======
-  if (categorySelect) {
-    categorySelect.addEventListener('change', () => {
-      const value = categorySelect.value;
-      document.querySelectorAll('.tshirt-box').forEach(box => {
-        box.style.display = (value === 'all' || box.dataset.category === value) ? 'block' : 'none';
-      });
-    });
-  }
-
-  // ======= Checkout =======
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
-      if (!cartItems || cartItems.length === 0) {
-        alert('Your cart is empty. Please add items before checkout.');
-        return;
-      }
-      const token = sessionStorage.getItem('customerToken'); // your login logic
-      if (!token) {
-        alert('Please login to continue.');
-        window.location.href = 'login.html';
-        return;
-      }
-      // proceed to payment
-      window.location.href = 'payment.html';
-    });
-  }
-
-  // ======= Dynamic products (optional fetch) =======
-  async function fetchProducts() {
-    try {
-      const res = await fetch('/api/products');
-      const data = await res.json();
-      if (data && data.success && Array.isArray(data.products)) {
-        allProducts = data.products.map(p => ({
-          id: p.id,
-          title: p.name,
-          price: p.price,
-          image: p.image_url,
-          category: p.category
-        }));
-        prependDynamicProducts(allProducts);
-      }
-    } catch (err) {
-      // ignore if API not present
-      console.warn('fetchProducts failed:', err);
-    }
-  }
-
-  function prependDynamicProducts(products) {
-    const grid = document.getElementById('productGrid');
-    const staticItems = [...grid.children];
-    products.reverse().forEach(p => {
-      const box = document.createElement('div');
-      box.className = 'tshirt-box';
-      box.dataset.category = p.category;
-      box.dataset.id = p.id;
-      box.innerHTML = `
-        <div class="pic">
-          <img src="${p.image}" class="tshirt-img" alt="${p.title}">
+  
+  let sub = 0;
+  CART.forEach((it, idx) => {
+    const row = document.createElement('div'); 
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <img src="${it.image}" alt="${escapeHtml(it.title)}">
+      <div class="cart-item-details">
+        <div class="cart-item-title">${escapeHtml(it.title)}</div>
+        <div class="cart-item-meta">Size: ${it.size} • ${formatPrice(it.price)}</div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" data-idx="${idx}" data-action="dec">-</button>
+          <span class="qty-display">${it.qty}</span>
+          <button class="qty-btn" data-idx="${idx}" data-action="inc">+</button>
+          <button class="btn" data-idx="${idx}" data-action="remove" style="margin-left: auto;">Remove</button>
         </div>
-        <h2 class="tshirt-title">${p.title}</h2>
-        <span class="tshirt-price">Rs.${p.price}</span>
-        <ion-icon name="cart" class="add-cart"></ion-icon>
-      `;
-      grid.insertBefore(box, staticItems[0] || null);
-    });
-    // no need to reattach listeners because we use delegation on productGrid
-  }
-
-  // ======= Init =======
-  updateCartCount();
-  updateCartContent();
-  cartPanel.classList.remove('open');
-  cartPanel.setAttribute('aria-hidden', 'true');
-
-  // attempt to fetch dynamic products (optional)
-  fetchProducts();
-
-  // react to storage changes from other tabs
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'cartItems') {
-      try {
-        cartItems = JSON.parse(e.newValue || '[]');
-      } catch (err) {
-        cartItems = [];
-      }
-      updateCartCount();
-      updateCartContent();
-    }
+      </div>
+      <div style="font-weight:700; min-width: 80px; text-align: right;">${formatPrice(it.price * it.qty)}</div>
+    `;
+    c.appendChild(row);
+    sub += it.price * it.qty;
   });
-})();
+  
+  $('#cartSubtotal').textContent = formatPrice(sub);
+  $('#cartCount').textContent = CART.reduce((s,i)=>s+i.qty,0);
+}
+
+/* ---------- UI wiring ---------- */
+// search
+$('#doSearch').addEventListener('click', ()=> { 
+  FILTER.q = $('#searchBox').value.trim(); 
+  PAGE=1; 
+  applyFiltersAndRender(); 
+  // Close mobile search if open
+  if (window.innerWidth <= 768) {
+    $('#searchWrap').classList.remove('active');
+  }
+});
+
+$('#searchBox').addEventListener('keydown', (e)=> { 
+  if (e.key === 'Enter') { 
+    FILTER.q = e.target.value.trim(); 
+    PAGE=1; 
+    applyFiltersAndRender(); 
+    // Close mobile search if open
+    if (window.innerWidth <= 768) {
+      $('#searchWrap').classList.remove('active');
+    }
+  } 
+});
+
+// Mobile search toggle
+$('#searchToggle').addEventListener('click', () => {
+  $('#searchWrap').classList.toggle('active');
+});
+
+// category sync
+$('#searchCategory').addEventListener('change', (e)=> { 
+  $('#sideCategory').value = e.target.value; 
+  FILTER.category = e.target.value; 
+  PAGE=1; 
+  applyFiltersAndRender(); 
+});
+
+$('#sideCategory').addEventListener('change', (e)=> { 
+  $('#searchCategory').value = e.target.value; 
+  FILTER.category = e.target.value; 
+  PAGE=1; 
+  applyFiltersAndRender(); 
+});
+
+// price
+$('#applyPrice').addEventListener('click', ()=> {
+  const min = Number($('#minPrice').value), max = Number($('#maxPrice').value);
+  FILTER.minPrice = isNaN(min) ? null : min;
+  FILTER.maxPrice = isNaN(max) ? null : max;
+  PAGE=1; 
+  applyFiltersAndRender();
+});
+
+// ratings
+$$('.rating').forEach(cb => cb.addEventListener('change', ()=> {
+  const checked = $$('.rating:checked');
+  FILTER.rating = checked.length ? Number(checked[0].value) : 0;
+  PAGE=1; 
+  applyFiltersAndRender();
+}));
+
+// color filter
+$$('.color-filter').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const color = e.target.dataset.color;
+    
+    // Toggle selection
+    if (FILTER.color === color) {
+      // If already selected, deselect
+      FILTER.color = null;
+      e.target.classList.remove('selected');
+    } else {
+      // Select new color
+      FILTER.color = color;
+      $$('.color-filter').forEach(b => b.classList.remove('selected'));
+      e.target.classList.add('selected');
+    }
+    
+    PAGE=1; 
+    applyFiltersAndRender();
+  });
+});
+
+// sort
+$('#sortSelect').addEventListener('change', (e)=> { 
+  SORT = e.target.value; 
+  PAGE=1; 
+  applyFiltersAndRender(); 
+});
+
+// view toggle
+let VIEW = 'grid';
+$('#viewToggle').addEventListener('click', ()=> {
+  if (VIEW === 'grid') { 
+    VIEW = 'list'; 
+    $('#viewToggle').textContent = 'Grid View'; 
+    $('#results').style.gridTemplateColumns = '1fr'; 
+  } else { 
+    VIEW = 'grid'; 
+    $('#viewToggle').textContent = 'List View'; 
+    // Reset to responsive grid
+    if (window.innerWidth > 1100) {
+      $('#results').style.gridTemplateColumns = 'repeat(3, 1fr)';
+    } else if (window.innerWidth > 700) {
+      $('#results').style.gridTemplateColumns = 'repeat(2, 1fr)';
+    } else {
+      $('#results').style.gridTemplateColumns = '1fr';
+    }
+  }
+});
+
+// clear filters
+$('#clearFilters').addEventListener('click', ()=> {
+  $('#sideCategory').value = 'all'; 
+  $('#searchCategory').value = 'all'; 
+  $('#minPrice').value=''; 
+  $('#maxPrice').value=''; 
+  $$('.rating').forEach(c=>c.checked=false);
+  $$('.color-filter').forEach(b => b.classList.remove('selected'));
+  FILTER = { q:'', category:'all', minPrice:null, maxPrice:null, rating:0, color:null }; 
+  PAGE=1; 
+  applyFiltersAndRender();
+});
+
+// results delegation: quickview & add/wishlist
+$('#results').addEventListener('click', (e)=> {
+  const btn = e.target.closest('button, [data-action]');
+  if (!btn) return;
+  const card = e.target.closest('.product');
+  if (!card) return;
+  const id = Number(card.dataset.id);
+  const prod = PRODUCTS.find(p=>p.id===id);
+  const action = btn.getAttribute('data-action');
+  if (action === 'quickview') openQuick(prod);
+  else if (action === 'add') openQuick(prod); // show quick for size
+  else if (action === 'wishlist') { toast('Added to wishlist'); }
+});
+
+// quick modal wiring
+$('#quickClose').addEventListener('click', closeQuick);
+$('#quickAdd').addEventListener('click', (e) => {
+  const pid = Number(e.target.dataset.id);
+  const p = PRODUCTS.find(x=>x.id===pid);
+  const sel = $('#sizeList button.selected');
+  const size = sel ? sel.dataset.size : 'M';
+  addToCart(p, size); 
+  closeQuick();
+});
+
+$('#sizeList').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-size]');
+  if (!b) return;
+  $$('#sizeList button').forEach(x => { 
+    x.classList.remove('selected'); 
+    x.style.background=''; 
+    x.style.color=''; 
+  });
+  b.classList.add('selected'); 
+  b.style.background='var(--accent)'; 
+  b.style.color='#fff';
+});
+
+// cart toggle
+$('#cartShortcut').addEventListener('click', ()=> { 
+  if ($('#cartPanel').classList.contains('open')) closeCart(); 
+  else openCart(); 
+});
+
+function openCart(){ 
+  $('#cartPanel').classList.add('open'); 
+  $('#cartPanel').setAttribute('aria-hidden','false'); 
+  renderCart(); 
+}
+
+function closeCart(){ 
+  $('#cartPanel').classList.remove('open'); 
+  $('#cartPanel').setAttribute('aria-hidden','true'); 
+}
+
+// FIXED: Cart close button
+$('#closeCart').addEventListener('click', closeCart);
+
+// cart content delegation
+$('#cartContent').addEventListener('click', (e) => {
+  const action = e.target.getAttribute('data-action') || (e.target.closest('button') && e.target.closest('button').getAttribute('data-action'));
+  if (!action) return;
+  const idx = Number(e.target.getAttribute('data-idx') || e.target.closest('button').getAttribute('data-idx'));
+  if (action === 'inc') { CART[idx].qty++; persistCart(); renderCart(); }
+  if (action === 'dec') { if (CART[idx].qty > 1) { CART[idx].qty--; persistCart(); renderCart(); } }
+  if (action === 'remove') { CART.splice(idx,1); persistCart(); renderCart(); }
+});
+
+$('#clearCartBtn').addEventListener('click', ()=> { 
+  if (confirm('Clear cart?')) { 
+    CART = []; 
+    persistCart(); 
+    renderCart(); 
+    toast('Cart cleared');
+  } 
+});
+
+$('#checkoutBtn').addEventListener('click', ()=> { 
+  if (CART.length === 0) { 
+    alert('Cart is empty'); 
+    return; 
+  } 
+  // Redirect to login page
+  window.location.href = 'login.html';
+});
+
+// Remove hamburger functionality since sidebar is completely hidden on mobile
+$('#filterToggle').addEventListener('click', (e) => {
+  e.preventDefault();
+  // Hamburger does nothing on mobile since filters are completely removed
+  if (window.innerWidth <= 768) {
+    return;
+  }
+});
+
+// close quick modal by clicking backdrop
+$('#quickModalBackdrop').addEventListener('click', (e)=> { 
+  if (e.target === $('#quickModalBackdrop')) closeQuick(); 
+});
+
+// persist on storage changes (multi-tab)
+window.addEventListener('storage', (e)=> {
+  if (e.key === 'mt_cart') CART = JSON.parse(e.newValue || '[]');
+  renderCart();
+});
+
+// Handle window resize for responsive grid
+window.addEventListener('resize', () => {
+  if (VIEW === 'grid') {
+    if (window.innerWidth > 1100) {
+      $('#results').style.gridTemplateColumns = 'repeat(3, 1fr)';
+    } else if (window.innerWidth > 700) {
+      $('#results').style.gridTemplateColumns = 'repeat(2, 1fr)';
+    } else {
+      $('#results').style.gridTemplateColumns = '1fr';
+    }
+  }
+  
+  // Close mobile search on resize to desktop
+  if (window.innerWidth > 768) {
+    $('#searchWrap').classList.remove('active');
+  }
+});
+
+// initial load + optional remote fetch (non-blocking)
+function init() {
+  applyFiltersAndRender();
+  renderCart();
+  // optional: try to fetch remote products and prepend them
+  fetch('/api/products').then(r => r.json()).then(data=> {
+    if (data && Array.isArray(data.products)) {
+      const remote = data.products.map(p => ({ id:p.id, title:p.name, price:p.price, category:p.category, image:p.image_url, rating:p.rating || 4.0 }));
+      PRODUCTS = [...remote, ...PRODUCTS];
+      applyFiltersAndRender();
+    }
+  }).catch(()=>{/* ignore if not available */});
+}
+
+init();
+
+/* helper */
+function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 </script>
-
 </body>
 </html>
