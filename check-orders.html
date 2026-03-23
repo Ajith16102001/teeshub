@@ -3,144 +3,233 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Check Your Orders</title>
+<title>My Orders</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #f0f2f5, #d9e2ec);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: #f5f7fb;
+  color: #222;
+}
+
+/* HEADER */
+.header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.home-btn {
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.home-btn:hover {
+  background: #333;
+}
+
+/* MAIN CONTAINER */
+.wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* LOGIN CARD */
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+/* INPUTS */
+.input-group {
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #000;
+  outline: none;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+button:hover {
+  background: #333;
+}
+
+/* ERROR */
+.error {
+  color: #e63946;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* ORDER LIST */
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* ORDER CARD */
+.order {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  transition: 0.2s;
+}
+
+.order:hover {
+  transform: translateY(-2px);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status.pending { background: #fff3cd; color: #856404; }
+.status.completed { background: #d4edda; color: #155724; }
+.status.cancelled { background: #f8d7da; color: #721c24; }
+
+/* ORDER DETAILS */
+.order p {
+  font-size: 14px;
+  margin: 4px 0;
+  color: #555;
+}
+
+/* ITEM LIST */
+.items {
+  margin-top: 10px;
+  padding-left: 18px;
+}
+
+.items li {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .header {
+    padding: 12px 15px;
   }
 
-  .container {
-    max-width: 600px;
-    margin: 80px auto;
-    background: #fff;
-    padding: 30px 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  .wrapper {
+    padding: 20px 10px;
+  }
+
+  .card {
+    padding: 20px;
   }
 
   h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #222;
+    font-size: 18px;
   }
-
-  input {
-    width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-
-  input:focus {
-    border-color: #000;
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    background: #000;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
-  }
-
-  button:hover {
-    background: #333;
-  }
-
-  .error {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  .orders {
-    margin-top: 20px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
-  .order {
-    background: #f9f9f9;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
-
-  .order h4 {
-    margin: 0 0 10px;
-    color: #111;
-  }
-
-  .order p {
-    margin: 5px 0;
-    color: #555;
-  }
-
-  .order ul {
-    margin: 10px 0 0 20px;
-    padding: 0;
-  }
-
-  .order ul li {
-    margin-bottom: 4px;
-  }
-
-  .home-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #000;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: 0.3s;
-  }
-
-  .home-btn::before {
-    content: "🏠";
-  }
-
-  .home-btn:hover {
-    background: #fff;
-    color: #000;
-  }
-
-  @media (max-width: 600px) {
-    .container { margin: 60px 15px; padding: 25px; }
-    .home-btn { top: 15px; right: 15px; padding: 8px 14px; font-size: 14px; }
-  }
+}
 </style>
 </head>
+
 <body>
 
-<a href="index.html" class="home-btn">Home</a>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">My Orders</div>
+  <a href="index.html" class="home-btn">Home</a>
+</div>
 
-<div class="container">
-  <h2>Check Your Orders</h2>
-  <input type="email" id="email" placeholder="Enter your email" required />
-  <input type="password" id="password" placeholder="Enter your password" required />
-  <button onclick="checkOrders()">View Orders</button>
-  <div id="feedback" class="error"></div>
-  <div class="orders" id="orders"></div>
+<!-- MAIN -->
+<div class="wrapper">
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div class="card">
+      <h2>Check Your Orders</h2>
+
+      <div class="input-group">
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Enter your password" />
+      </div>
+
+      <button onclick="checkOrders()">View Orders</button>
+      <div id="feedback" class="error"></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="orders" class="orders"></div>
+
+  </div>
 </div>
 
 <script>
@@ -166,55 +255,60 @@ async function checkOrders() {
     });
 
     const loginData = await loginRes.json();
+
     if (!loginRes.ok || !loginData.token) {
-      feedback.textContent = loginData.error || "Login failed. Please try again.";
+      feedback.textContent = loginData.error || "Login failed.";
       return;
     }
-
-    const token = loginData.token;
 
     const ordersRes = await fetch("/api/my-orders", {
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { "Authorization": `Bearer ${loginData.token}` }
     });
 
-    const ordersData = await ordersRes.json();
-    if (!ordersRes.ok || !ordersData.success) {
-      feedback.textContent = ordersData.error || "Could not fetch orders.";
+    const data = await ordersRes.json();
+
+    if (!data.success) {
+      feedback.textContent = data.error || "Error fetching orders.";
       return;
     }
 
-    const orders = ordersData.orders;
-    if (!orders || orders.length === 0) {
+    if (!data.orders.length) {
       ordersContainer.innerHTML = "<p>No orders found.</p>";
       return;
     }
 
-    ordersContainer.innerHTML = "";
-    orders.forEach(order => {
+    data.orders.forEach(order => {
+      const statusClass = order.status.toLowerCase();
+
+      const items = order.items.map(item =>
+        `<li>${item.product} × ${item.quantity} (${item.size || "-"}) - ₹${item.price}</li>`
+      ).join("");
+
       const div = document.createElement("div");
       div.className = "order";
 
-      const itemsHtml = order.items && order.items.length
-        ? order.items.map(item => `<li>${item.product} x ${item.quantity} (${item.size || '-'}) - Rs.${item.price}</li>`).join('')
-        : "<li>No items</li>";
-
       div.innerHTML = `
-        <h4>Order #${order.order_number}</h4>
-        <p><strong>Total:</strong> Rs.${order.total_amount}</p>
-        <p><strong>Status:</strong> ${order.status}</p>
-        <p><strong>Shipping Address:</strong> ${order.shipping_address || "N/A"}</p>
+        <div class="order-header">
+          <span>#${order.order_number}</span>
+          <span class="status ${statusClass}">${order.status}</span>
+        </div>
+
+        <p><strong>Total:</strong> ₹${order.total_amount}</p>
         <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-        <p><strong>Items:</strong></p>
-        <ul>${itemsHtml}</ul>
+        <p><strong>Address:</strong> ${order.shipping_address || "N/A"}</p>
+
+        <ul class="items">${items}</ul>
       `;
+
       ordersContainer.appendChild(div);
     });
 
   } catch (err) {
-    console.error("Unexpected error:", err);
-    feedback.textContent = "Something went wrong. Please try again later.";
+    feedback.textContent = "Server error. Try again.";
+    console.error(err);
   }
 }
 </script>
+
 </body>
 </html>
