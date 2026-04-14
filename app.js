@@ -56,7 +56,7 @@ app.get('/test-db', async (req, res) => {
 
 // ✅ Pages
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.json({ message: "Backend is running 🚀" });
 });
 
 app.get('/products', (req, res) => {
